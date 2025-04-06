@@ -35,16 +35,33 @@ class Config:
     def save(self, list):
         X = 0
         lines = []
+        self.configs = []
         for i in list:
             if X == 0:
                 setting = f"geometry="+list[X]
+                self.geometry = list[X]
+                self.configs.append(setting)
             elif X == 1:
                 setting = f"title="+list[X]
+                self.title = list[X]
+                self.configs.append(setting)
             lines.append(setting)
             X += 1
         with open(settings_file, "w") as file:
             for line in lines:
                 file.write(f"{line}\n")
+        self.settings_name = []
+        self.settings_value = []
+        for setting in self.configs:
+            content = setting.strip()
+            content = content.split("=")
+            if content[0] == "geometry":
+                self.geometry = str(content[1])
+            elif content[0] == "title":
+                self.title = content[1]
+            print(content)
+            self.settings_name.append(content[0])
+            self.settings_value.append(content[1])
             
 
 
