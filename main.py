@@ -90,8 +90,16 @@ class MainWindow(tk.Tk):
         b_decline = tk.Button(quit_frame,text="Decline", command=self.GUI_init)
         b_decline.pack(side="right",padx=3)
         self.buttons.append(b_decline)
+
+    def character_creator(self):
+        for button in self.buttons:
+            button.destroy()
+
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init)
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
     
-    def GUI_init(self):
+    def GUI_init(self): # MAIN
         for entity in self.buttons:
             entity.destroy()
         mainframe = tk.Frame(self)
@@ -102,8 +110,12 @@ class MainWindow(tk.Tk):
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
-        settings_button = tk.Button(mainframe, text="Settings", command=self.settings_menu)
-        settings_button.pack(side="top")
+        newcharacter = tk.Button(mainframe,width=20,text="New Character",command=self.character_creator)
+        newcharacter.pack(side="top",pady=2)
+        self.buttons.append(newcharacter)
+
+        settings_button = tk.Button(mainframe,width=20, text="Settings", command=self.settings_menu)
+        settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
 
         quit_button = tk.Button(self,text="QUIT",command=lambda: self.quitconfirm(quit_button))
@@ -135,7 +147,7 @@ class MainWindow(tk.Tk):
             self.buttons.append(set)
 
 
-            label = tk.Label(set, text=setting)
+            label = tk.Label(set, text=setting, width=10)
             label.pack(side="left",padx=3)
             self.buttons.append(label)
 
