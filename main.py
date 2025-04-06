@@ -4,15 +4,21 @@ import os
 import sys
 import tkinter as tk
 
-# Configs
-script_dir = os.path.dirname(os.path.abspath(__file__))
-configs_dir = os.path.join(script_dir,"configs")
-settings_file = os.path.join(configs_dir, "Settings")
-charorigin_file = os.path.join(configs_dir,"character_origin")
-items_dir = os.path.join(script_dir,"items")
-spells_dir = os.path.join(script_dir,"spells")
-characters_dir = os.path.join(script_dir,"characters")
-feature_dir = os.path.join(script_dir,"features")
+# Configs and directories:
+if True:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    configs_dir = os.path.join(script_dir,"configs")
+    items_dir = os.path.join(script_dir,"items")
+    spells_dir = os.path.join(script_dir,"spells")
+    characters_dir = os.path.join(script_dir,"characters")
+    feature_dir = os.path.join(script_dir,"features")
+
+# files in directories:
+if True:
+    keywords_items_file = os.path.join(configs_dir,"keywords_items")
+    types_items_file = os.path.join(configs_dir,"types_items")
+    settings_file = os.path.join(configs_dir, "Settings")
+    charorigin_file = os.path.join(configs_dir,"character_origin")
 
 
 class Config:
@@ -244,7 +250,7 @@ class MainWindow(tk.Tk):
 
         
 
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init)
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
@@ -265,6 +271,14 @@ class MainWindow(tk.Tk):
         newcharacter.pack(side="top",pady=2)
         self.buttons.append(newcharacter)
 
+        loadcharacter = tk.Button(mainframe, width=20, text= "Load Character", command=self.character_loader)
+        loadcharacter.pack(side="top",pady=2)
+        self.buttons.append(loadcharacter)
+
+        itembutton = tk.Button(mainframe,width=20,text="Items Menu", command=self.item_menu)
+        itembutton.pack(side="top",pady=2)
+        self.buttons.append(itembutton)
+
         settings_button = tk.Button(mainframe,width=20, text="Settings", command=self.settings_menu)
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
@@ -273,6 +287,71 @@ class MainWindow(tk.Tk):
         quit_button.pack(side="bottom")
         self.buttons.append(quit_button)
 
+    def character_loader(self):
+        for entity in self.buttons:
+            entity.destroy()
+        
+
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+    
+    def item_menu(self):
+        for entity in self.buttons:
+            entity.destroy()
+
+        mainlabel = tk.Label(self, text="Item Menu", font=20)
+        mainlabel.pack(side="top",pady=10)
+        self.buttons.append(mainlabel)
+
+        
+        
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init,width=20,bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+        newitembutton = tk.Button(self, text="Add New Item",width=20,bg="yellow",command=self.item_creation)
+        newitembutton.pack(side="bottom")
+        self.buttons.append(newitembutton)
+
+    def item_creation(self):
+        for entity in self.buttons:
+            entity.destroy()
+
+        creationlabel = tk.Label(self,font=("Arial Black", 10),text="Item Creation")
+        creationlabel.pack(side="top",pady=5)
+        self.buttons.append(creationlabel)
+
+        inputframe = tk.Frame(self)
+        inputframe.pack(anchor="center")
+        self.buttons.append(inputframe)
+
+        nameentry = tk.Entry(inputframe,width=40)
+        nameentry.insert(0, "Input item name")
+        nameentry.pack(side="top")
+        self.buttons.append(nameentry)
+
+        rarityentry = tk.Entry(inputframe,width=40)
+        rarityentry.insert(0, "Input item rarity")
+        rarityentry.pack(side="bottom")
+        self.buttons.append(rarityentry)
+
+        typeentry = tk.Entry(inputframe,width=40)
+        typeentry.insert(0, "Input item type")
+
+        ###
+
+        descframe = tk.Frame(self)
+        descframe.pack(anchor="center",pady=5)
+        self.buttons.append(descframe)
+
+        desctext = tk.Text(descframe, width=50,height=5)
+        desctext.pack()
+        self.buttons.append(desctext)
+        
+        back_main = tk.Button(self, text="Back", font=10, command=self.item_menu,width=20,bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
         
     
     def settings_menu(self):
@@ -315,7 +394,7 @@ class MainWindow(tk.Tk):
 
         print(setting_content)
         
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init)
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
     
