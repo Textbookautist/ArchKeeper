@@ -331,7 +331,7 @@ class MainWindow(tk.Tk):
         nameframe.pack()
         self.buttons.append(nameframe)
 
-        nameentry = tk.Entry(nameframe,width=40)
+        nameentry = tk.Entry(nameframe,width=40, font=("Arial Black", 8))
         nameentry.insert(0, "Input item name")
         nameentry.pack(side="left")
         self.buttons.append(nameentry)
@@ -348,6 +348,12 @@ class MainWindow(tk.Tk):
 
         raritybutton = tk.Button(rarityframe, text="P", command=lambda: self.get_saved_entries("item_rarity", target=rarityentry), height=1,width=2)
         raritybutton.pack(side="right")
+        self.buttons.append(raritybutton)
+
+        rarityclear = tk.Button(rarityframe, text="C", command=lambda: rarityentry.delete(0, tk.END))
+        rarityclear.pack(side="right")
+        self.buttons.append(rarityclear)
+
 
         typeframe = tk.Frame(inputframe)
         typeframe.pack()
@@ -361,6 +367,28 @@ class MainWindow(tk.Tk):
         typebutton = tk.Button(typeframe,text="P",command=lambda: self.get_saved_entries("item_type", target=typeentry), height=1, width=2)
         typebutton.pack(side="right")
         self.buttons.append(typebutton)
+
+        typeclear = tk.Button(typeframe,text="C",command=lambda: typeentry.delete(0, tk.END))
+        typeclear.pack(side="right")
+        self.buttons.append(typeclear)
+
+        keyframe = tk.Frame(inputframe)
+        keyframe.pack()
+        self.buttons.append(keyframe)
+
+        keyentry = tk.Entry(keyframe, width=40)
+        keyentry.insert(0, "Input item keywords (Light, Dark, Life...)")
+        keyentry.pack(side="left")
+        self.buttons.append(keyentry)
+
+        keybutton = tk.Button(keyframe,text="P",command=lambda: self.get_saved_entries("item_keyword", target=keyentry), height=1, width=2)
+        keybutton.pack(side="right")
+        self.buttons.append(keybutton)
+
+        keyclear = tk.Button(keyframe,text="C", command=lambda: keyentry.delete(0, tk.END))
+        keyclear.pack(side="right")
+        self.buttons.append(keyclear)
+
 
 
         ###
@@ -393,6 +421,9 @@ class MainWindow(tk.Tk):
             case "item_rarity":
                 used_file = rarity_items_file
                 title = "Rarity Selection"
+            case "item_keyword":
+                used_file = keywords_items_file
+                title = "Keyword Selection"
 
         canvas = tk.Canvas(root, width=400, height=400, bg="gray")
         canvas.pack(fill="both",expand=True)
@@ -401,23 +432,21 @@ class MainWindow(tk.Tk):
         label = tk.Label(canvas, text=title)
         label.pack(side="top")
         temp.append(label)
-        
-        button = tk.Button(canvas,text="Close",command=lambda x=temp: [item.destroy() for item in x])
-        button.pack(side="bottom")
-        temp.append(button)
+
+        closebutton = tk.Button(canvas,text="Close",command=lambda x=temp: [item.destroy() for item in x])
+        closebutton.pack(side="bottom")
+        temp.append(closebutton)
 
         new_ = tk.Button(canvas, text="Add New", command=lambda: self.append_new_entry(used_file, temp))
         new_.pack(side="bottom")
         temp.append(new_)
 
-        scrolli = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
-        scrolli.pack(side=tk.RIGHT, fill=tk.Y)
-        temp.append(scrolli)
+
 
         buttonframe = tk.Frame(canvas)
-        buttonframe.pack(anchor="center")
+        buttonframe.pack(side="bottom")
+        
         temp.append(buttonframe)
-
         
 
         with open(used_file, "r") as file:
@@ -427,7 +456,10 @@ class MainWindow(tk.Tk):
         X = 0
         Y = 0
         for x in extracted:
-            button = tk.Button(buttonframe, text=x, width=10,height=2, command=lambda insertable=x: (target.delete(0, tk.END), target.insert(0, insertable)))
+            if origin != "item_keyword":
+                button = tk.Button(buttonframe, text=x, width=10,height=2, command=lambda insertable=x: (target.delete(0, tk.END), target.insert(0, insertable)))
+            else:
+                button = tk.Button(buttonframe, text=x, width=10, height=2, command=lambda l=len(target.get()), insertable=(x+", "): target.insert(l, insertable))
             button.grid(row=Y, column=X)
             if X == 3:
                 X = 0
@@ -441,30 +473,63 @@ class MainWindow(tk.Tk):
             item.destroy()
         temppu = []
         content = []
+        save_these = []
         with open(used_file, "r") as file:
             for line in file:
-                content.append(str(line))
+                content.append(str(line).strip())
 
         entrycanvas = tk.Canvas(self, width=400, height=400, bg="light blue")
         entrycanvas.pack(side="top",fill="both",expand=True)
         temppu.append(entrycanvas)
 
+        label = tk.Label(entrycanvas, text="New Entries")
+        label.pack(side="top")
+        temppu.append(label)
+
         closebutton = tk.Button(entrycanvas, text="Close", command=lambda: (all(item.destroy() for item in temppu)))
         closebutton.pack(side="bottom")
         temppu.append(closebutton)
 
-        entryframes = tk.Entry(entrycanvas)
+        entryframes = tk.Entry(entrycanvas, bg="light blue")
         entryframes.pack(anchor="center")
         temppu.append(entryframes)
-
+        X = 0
+        Y = 0
         for entry in content:
-            entrance = tk.Entry(entryframes)
+            entrance = tk.Entry(entryframes,width=15)
             entrance.insert(0, entry)
-            entrance.pack(side="top")
-            temppu.append(entry)
-                
+            entrance.grid(row=X,column=Y)
+            temppu.append(entrance)
+            if X ==3:
+                X = 0
+                Y += 1
+            else:
+                X += 1
+        newntry = tk.Entry(entryframes,width=15)
+        newntry.grid(row=X, column=Y)
+        temppu.append(newntry)
 
-                
+        savebuttons = tk.Button(entrycanvas, text="Save", command= lambda: self.save_action(newntry.get(),content, temppu, used_file))
+        savebuttons.pack(side="bottom")
+        temppu.append(newntry)
+
+    def save_action(self, new, content, temppu, used_file):
+        print(new)
+        print(temppu)
+        print(content)
+        content.append(new)  # Append new data to content
+        for item in temppu:  # Destroy all items in the temporary list
+            item.destroy()
+        self.insert_new_list(used_file, content)  # Insert the new list
+        self.item_creation()  # Call the item creation method
+
+    def insert_new_list(self, chosenfile, list):
+        with open(chosenfile, "w") as file:
+            for line in list:
+                if line != "" and line != " ":
+                    file.write(str(line)+"\n")
+
+        
         
     
     def settings_menu(self):
