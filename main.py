@@ -326,24 +326,51 @@ class MainWindow(tk.Tk):
         inputframe.pack(anchor="center")
         self.buttons.append(inputframe)
 
-        nameentry = tk.Entry(inputframe,width=40)
-        nameentry.insert(0, "Input item name")
-        nameentry.pack(side="top")
-        self.buttons.append(nameentry)
+        nameframe = tk.Frame(inputframe)
+        nameframe.pack()
+        self.buttons.append(nameframe)
 
-        rarityentry = tk.Entry(inputframe,width=40)
+        nameentry = tk.Entry(nameframe,width=40)
+        nameentry.insert(0, "Input item name")
+        nameentry.pack(side="left")
+        self.buttons.append(nameentry)
+        
+        rarityframe = tk.Frame(inputframe)
+        rarityframe.pack()
+        self.buttons.append(rarityframe)
+
+
+        rarityentry = tk.Entry(rarityframe,width=40)
         rarityentry.insert(0, "Input item rarity")
-        rarityentry.pack(side="bottom")
+        rarityentry.pack(side="left")
         self.buttons.append(rarityentry)
 
-        typeentry = tk.Entry(inputframe,width=40)
+        raritybutton = tk.Button(rarityframe, text=" ", command=lambda: self.get_saved_entries("item_rarity"))
+        raritybutton.pack(side="right")
+
+        typeframe = tk.Frame(inputframe)
+        typeframe.pack()
+        self.buttons.append(typeframe)
+
+        typeentry = tk.Entry(typeframe,width=40)
         typeentry.insert(0, "Input item type")
+        typeentry.pack(side="left")
+        self.buttons.append(typeentry)
+
+        typebutton = tk.Button(typeframe,text=" ",command=lambda: self.get_saved_entries("item_type"))
+        typebutton.pack(side="right")
+        self.buttons.append(typebutton)
+
 
         ###
 
         descframe = tk.Frame(self)
         descframe.pack(anchor="center",pady=5)
         self.buttons.append(descframe)
+
+        desclabel = tk.Label(descframe,text="Item Description")
+        desclabel.pack(side="top")
+        self.buttons.append(desclabel)
 
         desctext = tk.Text(descframe, width=50,height=5)
         desctext.pack()
@@ -352,6 +379,11 @@ class MainWindow(tk.Tk):
         back_main = tk.Button(self, text="Back", font=10, command=self.item_menu,width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
+
+    def get_saved_entries(self, origin):
+        match origin:
+            case "item_type":
+                pass
         
     
     def settings_menu(self):
