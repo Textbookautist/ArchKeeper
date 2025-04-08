@@ -409,6 +409,23 @@ class MainWindow(tk.Tk):
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
+        save_item = tk.Button(self, text = "Save item", font=10, command=lambda: (
+            print(keyentry.get()),  # Print the keys value
+            self.save_new_item(
+                name=nameentry.get(), 
+                type=typeentry.get(), 
+                rarity=rarityentry.get(), 
+                keys=keyentry.get(), 
+                desc=desctext.get("1.0", "end").strip()
+            ),
+            self.item_menu()
+        ))
+
+
+        save_item.pack(side="bottom")
+        self.buttons.append(save_item)
+
+
     def get_saved_entries(self, origin, target):
         temp = []
         extracted = []
@@ -528,6 +545,36 @@ class MainWindow(tk.Tk):
             for line in list:
                 if line != "" and line != " ":
                     file.write(str(line)+"\n")
+
+    def save_new_item(self, name, type, rarity, keys, desc):
+        print(keys)
+        name_with_lines = name.replace(" ", "_")
+        new_item_path = os.path.join(items_dir, name_with_lines)
+
+        endkeys = []
+        keylist = list(keys).split(", ")
+        for key in keylist:
+            endkeys.append(key)
+        print(endkeys)
+
+        os.makedirs(new_item_path, exist_ok=True)
+        name_path = os.path.join(new_item_path, "name")
+        with open(name_path, "w") as file:
+            file.write(str(name))
+        raritypath = os.path.join(new_item_path, "rarity")
+        with open(raritypath, "w") as file:
+            file.write(str(rarity))
+        type_path = os.path.join(new_item_path, "type")
+        with open(type_path, "w") as file:
+            file.write(type)
+
+            for key in endkeys:
+                file.write({str(key)}+"\n")
+        descpath = os.path.join(new_item_path, "desc")
+        with open(descpath, "w") as file:
+            file.write(desc)
+        print("Item successfully saved!")
+         
 
         
         
