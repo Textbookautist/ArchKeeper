@@ -17,6 +17,7 @@ if True:
 if True:
     keywords_items_file = os.path.join(configs_dir,"keywords_items")
     types_items_file = os.path.join(configs_dir,"types_items")
+    rarity_items_file = os.path.join(configs_dir,"rarity_items")
     settings_file = os.path.join(configs_dir, "Settings")
     charorigin_file = os.path.join(configs_dir,"character_origin")
 
@@ -345,7 +346,7 @@ class MainWindow(tk.Tk):
         rarityentry.pack(side="left")
         self.buttons.append(rarityentry)
 
-        raritybutton = tk.Button(rarityframe, text=" ", command=lambda: self.get_saved_entries("item_rarity"))
+        raritybutton = tk.Button(rarityframe, text="P", command=lambda: self.get_saved_entries("item_rarity", target=rarityentry), height=1,width=2)
         raritybutton.pack(side="right")
 
         typeframe = tk.Frame(inputframe)
@@ -357,7 +358,7 @@ class MainWindow(tk.Tk):
         typeentry.pack(side="left")
         self.buttons.append(typeentry)
 
-        typebutton = tk.Button(typeframe,text=" ",command=lambda: self.get_saved_entries("item_type"))
+        typebutton = tk.Button(typeframe,text="P",command=lambda: self.get_saved_entries("item_type", target=typeentry), height=1, width=2)
         typebutton.pack(side="right")
         self.buttons.append(typebutton)
 
@@ -380,10 +381,90 @@ class MainWindow(tk.Tk):
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
-    def get_saved_entries(self, origin):
+    def get_saved_entries(self, origin, target):
+        temp = []
+        extracted = []
+        used_file = None
+        title = ""
         match origin:
             case "item_type":
-                pass
+                used_file = types_items_file
+                title = "Type Selection"
+            case "item_rarity":
+                used_file = rarity_items_file
+                title = "Rarity Selection"
+
+        canvas = tk.Canvas(root, width=400, height=400, bg="gray")
+        canvas.pack(fill="both",expand=True)
+        temp.append(canvas)
+
+        label = tk.Label(canvas, text=title)
+        label.pack(side="top")
+        temp.append(label)
+        
+        button = tk.Button(canvas,text="Close",command=lambda x=temp: [item.destroy() for item in x])
+        button.pack(side="bottom")
+        temp.append(button)
+
+        new_ = tk.Button(canvas, text="Add New", command=lambda: self.append_new_entry(used_file, temp))
+        new_.pack(side="bottom")
+        temp.append(new_)
+
+        scrolli = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
+        scrolli.pack(side=tk.RIGHT, fill=tk.Y)
+        temp.append(scrolli)
+
+        buttonframe = tk.Frame(canvas)
+        buttonframe.pack(anchor="center")
+        temp.append(buttonframe)
+
+        
+
+        with open(used_file, "r") as file:
+            for line in file:
+                extracted.append(str(line))
+        extracted.sort()
+        X = 0
+        Y = 0
+        for x in extracted:
+            button = tk.Button(buttonframe, text=x, width=10,height=2, command=lambda insertable=x: (target.delete(0, tk.END), target.insert(0, insertable)))
+            button.grid(row=Y, column=X)
+            if X == 3:
+                X = 0
+                Y += 1
+            else:
+                X += 1
+            temp.append(button)
+
+    def append_new_entry(self, used_file, temp):
+        for item in temp:
+            item.destroy()
+        temppu = []
+        content = []
+        with open(used_file, "r") as file:
+            for line in file:
+                content.append(str(line))
+
+        entrycanvas = tk.Canvas(self, width=400, height=400, bg="light blue")
+        entrycanvas.pack(side="top",fill="both",expand=True)
+        temppu.append(entrycanvas)
+
+        closebutton = tk.Button(entrycanvas, text="Close", command=lambda: (all(item.destroy() for item in temppu)))
+        closebutton.pack(side="bottom")
+        temppu.append(closebutton)
+
+        entryframes = tk.Entry(entrycanvas)
+        entryframes.pack(anchor="center")
+        temppu.append(entryframes)
+
+        for entry in content:
+            entrance = tk.Entry(entryframes)
+            entrance.insert(0, entry)
+            entrance.pack(side="top")
+            temppu.append(entry)
+                
+
+                
         
     
     def settings_menu(self):
