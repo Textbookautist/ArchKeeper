@@ -1,8 +1,8 @@
 # Main
 
-import os
-import shutil
-import tkinter as tk
+import os # Used to find the script and create paths for file management
+import shutil # Used to remove items, (characters, features, spells, kind of anything really. Not yet implemented)
+import tkinter as tk # Runs the GUI
 
 finn_encoding = "utf-8" # Used for file storing and reading with Ä Ö and Ås
 
@@ -10,20 +10,20 @@ finn_encoding = "utf-8" # Used for file storing and reading with Ä Ö and Ås
 if True:
     script_dir = os.path.dirname(os.path.abspath(__file__)) # Finds script itself, 
     #                                                       used to construct further paths
-    configs_dir = os.path.join(script_dir,"configs")
-    items_dir = os.path.join(script_dir,"items")
-    spells_dir = os.path.join(script_dir,"spells")
-    characters_dir = os.path.join(script_dir,"characters")
-    feature_dir = os.path.join(script_dir,"features")
+    configs_dir = os.path.join(script_dir,"configs") # Stores settings
+    items_dir = os.path.join(script_dir,"items") # Stores items
+    spells_dir = os.path.join(script_dir,"spells") # Stores spells (Unimplemented)
+    characters_dir = os.path.join(script_dir,"characters") # Stores characters (Started)
+    feature_dir = os.path.join(script_dir,"features") # Stores character features (Unimplemented)
 
 # files in directories:
 if True:
-    keywords_items_file = os.path.join(configs_dir,"keywords_items")
-    types_items_file = os.path.join(configs_dir,"types_items")
-    rarity_items_file = os.path.join(configs_dir,"rarity_items")
-    settings_file = os.path.join(configs_dir, "Settings")
-    color_file = os.path.join(configs_dir,"maincolor")
-    charorigin_file = os.path.join(configs_dir,"character_origin")
+    keywords_items_file = os.path.join(configs_dir,"keywords_items") # Stores keywords like "Cheap" and "Heavy"
+    types_items_file = os.path.join(configs_dir,"types_items") # Stores types like "Consumable" and "Weapon"
+    rarity_items_file = os.path.join(configs_dir,"rarity_items") # Stores rarities like "Rare" and "Cosmic"
+    settings_file = os.path.join(configs_dir, "Settings") # Stores screen geometry and title-text
+    color_file = os.path.join(configs_dir,"maincolor") # Stores theme
+    charorigin_file = os.path.join(configs_dir,"character_origin") # Stores starting characteristics for creation
 
 
 
@@ -600,8 +600,6 @@ class MainWindow(tk.Tk):
         self.buttons.append(newitembutton)
 
 
-
-
     # Menu for item creation
     def item_creation(self):
         for entity in self.buttons:
@@ -723,8 +721,6 @@ class MainWindow(tk.Tk):
         self.buttons.append(save_item)
 
 
-
-
     # When user presses "P"-button, this function runs fetching data of the selected type
     def get_saved_entries(self, origin, target):
         temp = [] # Instead of clearing the scene as usual, this is used to clean the canvas
@@ -786,8 +782,6 @@ class MainWindow(tk.Tk):
             temp.append(button)
 
 
-
-
     # Honstly I can't remember what this was for.
     def append_new_entry(self, used_file, temp):
         for item in temp:
@@ -839,8 +833,6 @@ class MainWindow(tk.Tk):
         temppu.append(newntry)
 
 
-
-
     # Creates the new enntry to the selected list, be it type, rarity or keyword.
     def save_action(self, new, content, temppu, used_file):
         print(new)
@@ -853,16 +845,12 @@ class MainWindow(tk.Tk):
         self.item_creation()  # Call the item creation method
 
 
-
-
     # Saves the new list content to their own file
     def insert_new_list(self, chosenfile, list):
         with open(chosenfile, "w") as file:
             for line in list:
                 if line != "" and line != " ":
                     file.write(str(line)+"\n")
-
-
 
 
     def save_new_item(self, name_entry, type_entry, rarity_entry, keys_entry, desc_entry):
@@ -997,8 +985,6 @@ class MainWindow(tk.Tk):
         back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
-
-
 
 
     # Inputs come from the settings menu, and affect the screen geometry, title and background color. Through here they move to configs class to be saved on file.
