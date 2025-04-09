@@ -1,8 +1,10 @@
 # Main
 
 import os
-import sys
+import shutil
 import tkinter as tk
+
+finn_encoding = "utf-8"
 
 # Configs and directories:
 if True:
@@ -20,6 +22,10 @@ if True:
     rarity_items_file = os.path.join(configs_dir,"rarity_items")
     settings_file = os.path.join(configs_dir, "Settings")
     charorigin_file = os.path.join(configs_dir,"character_origin")
+
+def item_delete(path):
+    shutil.rmtree(path)
+
 
 
 class Config:
@@ -296,6 +302,109 @@ class MainWindow(tk.Tk):
         back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
+
+    def open_item(self, item_path, itemname):
+        print(item_path)
+        for entity in self.buttons:
+            entity.destroy()
+        item_desc = None
+        item_keys = None
+        item_rarity = None
+        item_type = None
+        stuff_on_file = []
+        keywords = []
+        for file in os.listdir(item_path):
+            print(item_path)
+            print(file)
+            stuff_path = os.path.join(item_path,file)
+            print(stuff_path)
+            stuff_name = file
+            property = [stuff_name, stuff_path]
+            stuff_on_file.append(property)
+        for property in stuff_on_file:
+            if property[0] == "type":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    item_type = file.read()
+            elif property[0] == "rarity":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    item_rarity = file.read()
+            elif property[0] == "desc":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    item_desc = file.read()
+            
+            elif property[0] == "keywords":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    for line in file:
+                        keywords.append(line.strip())
+                keystring = keywords[0]
+                keywords.remove(keywords[0])
+                for word in keywords:
+                    keystring = f"{keystring}, {word}"
+                item_keys = keystring
+        print(itemname)
+        print(item_type)
+        print(item_rarity)
+        print(item_keys)
+        print(item_desc)
+
+        label = tk.Label(self, text=itemname, font=20)
+        label.pack(side="top")
+        self.buttons.append(label)
+
+        typeframe = tk.Frame(self)
+        typeframe.pack()
+        self.buttons.append(typeframe)
+
+        typedisplay = tk.Label(typeframe, text=item_type)
+        typedisplay.pack(anchor="center")
+        self.buttons.append(typedisplay)
+
+        rarityframe = tk.Frame(self)
+        rarityframe.pack()
+        self.buttons.append(rarityframe)
+
+        raritydisplay = tk.Label(rarityframe, text=item_rarity)
+        raritydisplay.pack(anchor="center")
+        self.buttons.append(raritydisplay)
+
+        keyframe = tk.Frame(self)
+        keyframe.pack()
+        self.buttons.append(keyframe)
+
+        keydis = tk.Label(keyframe, text = item_keys)
+        keydis.pack(anchor=("center"))
+        self.buttons.append(keydis)
+
+        descframe = tk.Frame(self)
+        descframe.pack()
+        self.buttons.append(descframe)
+
+        descplay = tk.Label(descframe, text=item_desc,wraplength=400, justify="left")
+        descplay.pack(anchor="center")
+        self.buttons.append(descplay)
+
+        bottomframe = tk.Frame(self)
+        bottomframe.pack(side="bottom")
+        self.buttons.append(bottomframe)
+
+        back_items = tk.Button(bottomframe, text="Back", font=10, command=self.item_menu,width=20,bg="pink")
+        back_items.grid(row=0,column=1)
+        self.buttons.append(back_items)
+
+        delete_button = tk.Button(bottomframe, text="Delete", bg="red",width=8, command=lambda f = bottomframe, p = item_path: self.item_delete_confirm(delete_button, f, p))
+        delete_button.grid(row=0,column=0)
+        self.buttons.append(delete_button)
+
+        edit_button = tk.Button(bottomframe, text="Edit", width=8, bg="yellow")
+        edit_button.grid(row=0,column=2)
+        self.buttons.append(edit_button)
+    
+    def item_delete_confirm(self, db, f, p):
+        db.destroy()
+        confirmbutton = tk.Button(f, text="Confirm Deletion", command=lambda p=p:(item_delete(p), self.item_menu()))
+        confirmbutton.grid(row=0,column=0)
+        self.buttons.append(confirmbutton)
+
     
     def item_menu(self):
         for entity in self.buttons:
@@ -305,13 +414,36 @@ class MainWindow(tk.Tk):
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
-        
+        items_frame = tk.Frame(self)
+        items_frame.pack(anchor="center")
+        self.buttons.append(items_frame)
+
+        item_display_frame = tk.Frame(items_frame)
+        item_display_frame.pack(anchor="center")
+        self.buttons.append(items_frame)
+        X = 0
+        Y = 0
+        for item in os.listdir(items_dir):
+            item_path = os.path.join(items_dir, item)
+            print(item)
+            print(item_path)
+            itemname = item.strip()
+            itemname = itemname.replace("_", " ")
+            if os.path.isdir(item_path):
+                itembutton = tk.Button(item_display_frame, text=itemname, command=lambda this_item=item_path, itemname=itemname: self.open_item(this_item, itemname))
+                itembutton.grid(row=X, column=Y)
+                self.buttons.append(itembutton)
+                if X == 4:
+                    X = 0
+                    Y += 1
+                else:
+                    X += 1
         
         back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init,width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
-        newitembutton = tk.Button(self, text="Add New Item",width=20,bg="yellow",command=self.item_creation)
+        newitembutton = tk.Button(self, text="Add New Item",width=20,font=10,bg="yellow",command=self.item_creation)
         newitembutton.pack(side="bottom")
         self.buttons.append(newitembutton)
 
@@ -412,11 +544,11 @@ class MainWindow(tk.Tk):
         save_item = tk.Button(self, text = "Save item", font=10, command=lambda: (
             print(keyentry.get()),  # Print the keys value
             self.save_new_item(
-                name=nameentry.get(), 
-                type=typeentry.get(), 
-                rarity=rarityentry.get(), 
-                keys=keyentry.get(), 
-                desc=desctext.get("1.0", "end").strip()
+                nameentry, 
+                typeentry, 
+                rarityentry, 
+                keyentry, 
+                desctext
             ),
             self.item_menu()
         ))
@@ -546,32 +678,46 @@ class MainWindow(tk.Tk):
                 if line != "" and line != " ":
                     file.write(str(line)+"\n")
 
-    def save_new_item(self, name, type, rarity, keys, desc):
-        print(keys)
+    def save_new_item(self, name_entry, type_entry, rarity_entry, keys_entry, desc_entry):
+        keys = keys_entry.get() # Tää ilmeisesti ottaa listan, stringin sijaan o.O
+        name = name_entry.get()
+        rarity = rarity_entry.get()
+        type = type_entry.get()
+        desc = desc_entry.get("1.0", "end")
+        print(keys) # Mut tää sit taas printtaa stringin eikä listaa ? O.o
         name_with_lines = name.replace(" ", "_")
         new_item_path = os.path.join(items_dir, name_with_lines)
+        
+        stringi = ""
+        for i in keys:
+            stringi = f"{stringi}, {i}"
 
         endkeys = []
-        keylist = list(keys).split(", ")
+        keylist = keys.split(", ") # Ja sit tää täällä sanoo et 'list' object has no attribute 'split' ? -_-
         for key in keylist:
             endkeys.append(key)
         print(endkeys)
 
         os.makedirs(new_item_path, exist_ok=True)
         name_path = os.path.join(new_item_path, "name")
-        with open(name_path, "w") as file:
+        with open(name_path, "w", encoding=finn_encoding) as file:
             file.write(str(name))
+
         raritypath = os.path.join(new_item_path, "rarity")
-        with open(raritypath, "w") as file:
+        with open(raritypath, "w", encoding=finn_encoding) as file:
             file.write(str(rarity))
+
+        key_path = os.path.join(new_item_path, "keywords")
+        with open(key_path, "w", encoding=finn_encoding) as file:
+            for i in endkeys:
+                file.write(i+"\n")
+        
         type_path = os.path.join(new_item_path, "type")
-        with open(type_path, "w") as file:
+        with open(type_path, "w", encoding=finn_encoding) as file:
             file.write(type)
 
-            for key in endkeys:
-                file.write({str(key)}+"\n")
         descpath = os.path.join(new_item_path, "desc")
-        with open(descpath, "w") as file:
+        with open(descpath, "w", encoding=finn_encoding) as file:
             file.write(desc)
         print("Item successfully saved!")
          
