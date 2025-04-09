@@ -21,6 +21,7 @@ if True:
     types_items_file = os.path.join(configs_dir,"types_items")
     rarity_items_file = os.path.join(configs_dir,"rarity_items")
     settings_file = os.path.join(configs_dir, "Settings")
+    color_file = os.path.join(configs_dir,"maincolor")
     charorigin_file = os.path.join(configs_dir,"character_origin")
 
 def item_delete(path):
@@ -34,18 +35,36 @@ class Config:
         with open(settings_file, "r") as file:
             for line in file:
                 self.configs.append(str(line))
+
+        print(f"Self configs: {self.configs}")
         self.settings_name = []
         self.settings_value = []
+        self.color = ""
         for setting in self.configs:
+            print(f"Accessing setting {setting}")
             content = setting.strip()
             content = content.split("=")
             if content[0] == "geometry":
                 self.geometry = str(content[1])
             elif content[0] == "title":
                 self.title = content[1]
-            print(content)
             self.settings_name.append(content[0])
             self.settings_value.append(content[1])
+        with open(color_file, "r") as file:
+            coloringbook = file.read()
+            colori = coloringbook.strip()
+            self.color = colori
+
+        if self.color == "black":
+            self.back_color = "black"
+            self.font_color = "black"
+            self.title_color = "red"
+        elif self.color == "white":
+            self.back_color = "white"
+            self.font_color = "black"
+            self.title_color = "black"
+                
+            
         print(self.settings_name,self.settings_value)
 
     def save(self, list):
@@ -78,26 +97,43 @@ class Config:
             print(content)
             self.settings_name.append(content[0])
             self.settings_value.append(content[1])
-            
+
+    def savecolor(self, color):
+        with open(color_file, "w") as file:
+            file.write(color)
 
 
 class MainWindow(tk.Tk):
     def __init__(self, screenName = None, baseName = None, className = "Tk", useTk = True, sync = False, use = None):
         super().__init__(screenName, baseName, className, useTk, sync, use)
-        self.config = Config()
+        self.settings = Config()
         try:
-            self.geometry(self.config.geometry)
+            self.geometry(self.settings.geometry)
         except:
             self.geometry("500x500")
-        self.title(self.config.title)
+        self.title(self.settings.title)
+        self.config(bg=self.settings.color)
         self.buttons = []
         self.GUI_init()
+    
+    def update_color(self, color):
+        self.config(bg=color)
+
+        if color == "black":
+            self.settings.back_color = "black"
+            self.settings.font_color = "black"
+            self.settings.title_color = "red"
+        elif color == "white":
+            self.settings.back_color = "white"
+            self.settings.font_color = "black"
+            self.settings.title_color = "black"
+        self.settings_menu()
 
     def quitconfirm(self, button):
         button.destroy()
         self.buttons.remove(button)
 
-        quit_frame = tk.Frame(self)
+        quit_frame = tk.Frame(self,bg=self.settings.back_color)
         quit_frame.pack(side="bottom")
         self.buttons.append(quit_frame)
 
@@ -181,7 +217,7 @@ class MainWindow(tk.Tk):
         label.pack(side="top", pady=5)
         self.buttons.append(label)
 
-        pointframe = tk.Frame(self)
+        pointframe = tk.Frame(self,bg=self.settings.back_color)
         pointframe.pack(side="top")
         self.buttons.append(pointframe)
 
@@ -194,7 +230,7 @@ class MainWindow(tk.Tk):
         SPlabel.pack(side="right")
         self.buttons.append(SPlabel)
 
-        mainframe = tk.Frame(self)
+        mainframe = tk.Frame(self,bg=self.settings.back_color)
         mainframe.pack(side="top",pady=5)
         self.buttons.append(mainframe)
 
@@ -209,7 +245,7 @@ class MainWindow(tk.Tk):
             if content[0] == "name":
                 continue
             if content[0] == "body" or content[0] == "mind" or content[0] == "soul":
-                charframe = tk.Frame(mainframe)
+                charframe = tk.Frame(mainframe,bg=self.settings.back_color)
                 charframe.pack(side="left",padx=15)
                 self.buttons.append(charframe)
             #buttons for characteristics and their skills
@@ -219,7 +255,7 @@ class MainWindow(tk.Tk):
                 char = content[0].capitalize()
                 val = content[1]
 
-                buttonframe = tk.Frame(charframe)
+                buttonframe = tk.Frame(charframe,bg=self.settings.back_color)
                 buttonframe.pack(side="top",pady=5)
                 self.buttons.append(buttonframe)
 
@@ -238,7 +274,7 @@ class MainWindow(tk.Tk):
                 char = content[0].capitalize()
                 val = content[1]
 
-                buttonframe = tk.Frame(charframe)
+                buttonframe = tk.Frame(charframe,bg=self.settings.back_color)
                 buttonframe.pack(side="top",pady=2)
                 self.buttons.append(buttonframe)
 
@@ -261,16 +297,37 @@ class MainWindow(tk.Tk):
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
-    
+    def character_loader(self):
+        for entity in self.buttons:
+            entity.destroy()
+        
+        mainlabel = tk.Label(self,text="Characters",bg=self.settings.back_color,font=("Arial Black", 30),fg=self.settings.title_color)
+        mainlabel.pack(side="top",pady=10)
+        self.buttons.append(mainlabel)
+
+        characters = []
+        for file in os.listdir(characters_dir):
+            characters.append(file)
+        if len(characters) == 0:
+            label = tk.Label(self, text="You have no characters", fg=self.settings.title_color,bg=self.settings.back_color,font=20)
+            label.pack(anchor="center")
+            self.buttons.append(label)
+        
+
+        
+
+        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
     
     def GUI_init(self): # MAIN
         for entity in self.buttons:
             entity.destroy()
-        mainframe = tk.Frame(self)
+        mainframe = tk.Frame(self, bg=self.settings.back_color)
         mainframe.pack(anchor="center")
         self.buttons.append(mainframe)
 
-        mainlabel = tk.Label(mainframe, text="Main Menu", font=30)
+        mainlabel = tk.Label(mainframe, text="Main Menu", font=("Arial Black", 30), fg=self.settings.title_color,bg=self.settings.back_color)
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
@@ -294,14 +351,7 @@ class MainWindow(tk.Tk):
         quit_button.pack(side="bottom")
         self.buttons.append(quit_button)
 
-    def character_loader(self):
-        for entity in self.buttons:
-            entity.destroy()
-        
-
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
+    
 
     def open_item(self, item_path, itemname):
         print(item_path)
@@ -347,43 +397,43 @@ class MainWindow(tk.Tk):
         print(item_keys)
         print(item_desc)
 
-        label = tk.Label(self, text=itemname, font=20)
-        label.pack(side="top")
+        label = tk.Label(self, text=itemname, font=("Arial Black", 20),fg=self.settings.title_color, bg=self.settings.back_color)
+        label.pack(side="top",pady=10)
         self.buttons.append(label)
 
-        typeframe = tk.Frame(self)
+        typeframe = tk.Frame(self,bg=self.settings.back_color)
         typeframe.pack()
         self.buttons.append(typeframe)
 
         typedisplay = tk.Label(typeframe, text=item_type)
-        typedisplay.pack(anchor="center")
+        typedisplay.pack(anchor="center",pady=3)
         self.buttons.append(typedisplay)
 
-        rarityframe = tk.Frame(self)
+        rarityframe = tk.Frame(self,bg=self.settings.back_color)
         rarityframe.pack()
         self.buttons.append(rarityframe)
 
         raritydisplay = tk.Label(rarityframe, text=item_rarity)
-        raritydisplay.pack(anchor="center")
+        raritydisplay.pack(anchor="center",pady=3)
         self.buttons.append(raritydisplay)
 
-        keyframe = tk.Frame(self)
+        keyframe = tk.Frame(self,bg=self.settings.back_color)
         keyframe.pack()
         self.buttons.append(keyframe)
 
         keydis = tk.Label(keyframe, text = item_keys)
-        keydis.pack(anchor=("center"))
+        keydis.pack(anchor=("center"),pady=3)
         self.buttons.append(keydis)
 
-        descframe = tk.Frame(self)
+        descframe = tk.Frame(self,bg=self.settings.back_color)
         descframe.pack()
         self.buttons.append(descframe)
 
-        descplay = tk.Label(descframe, text=item_desc,wraplength=400, justify="left")
-        descplay.pack(anchor="center")
+        descplay = tk.Label(descframe, text=item_desc,wraplength=400, justify="left",height=20,width=50)
+        descplay.pack(anchor="center",pady=3)
         self.buttons.append(descplay)
 
-        bottomframe = tk.Frame(self)
+        bottomframe = tk.Frame(self,bg=self.settings.back_color)
         bottomframe.pack(side="bottom")
         self.buttons.append(bottomframe)
 
@@ -410,15 +460,15 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        mainlabel = tk.Label(self, text="Item Menu", font=20)
+        mainlabel = tk.Label(self, text="Item Menu", font=("Arial Black", 20),bg=self.settings.back_color, fg=self.settings.title_color)
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
-        items_frame = tk.Frame(self)
+        items_frame = tk.Frame(self,bg=self.settings.back_color)
         items_frame.pack(anchor="center")
         self.buttons.append(items_frame)
 
-        item_display_frame = tk.Frame(items_frame)
+        item_display_frame = tk.Frame(items_frame,bg=self.settings.back_color)
         item_display_frame.pack(anchor="center")
         self.buttons.append(items_frame)
         X = 0
@@ -430,7 +480,7 @@ class MainWindow(tk.Tk):
             itemname = item.strip()
             itemname = itemname.replace("_", " ")
             if os.path.isdir(item_path):
-                itembutton = tk.Button(item_display_frame, text=itemname, command=lambda this_item=item_path, itemname=itemname: self.open_item(this_item, itemname))
+                itembutton = tk.Button(item_display_frame,width=20, text=itemname, command=lambda this_item=item_path, itemname=itemname: self.open_item(this_item, itemname))
                 itembutton.grid(row=X, column=Y)
                 self.buttons.append(itembutton)
                 if X == 4:
@@ -451,7 +501,7 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        creationlabel = tk.Label(self,font=("Arial Black", 10),text="Item Creation")
+        creationlabel = tk.Label(self,font=("Arial Black", 10),text="Item Creation",bg=self.settings.back_color,fg=self.settings.font_color)
         creationlabel.pack(side="top",pady=5)
         self.buttons.append(creationlabel)
 
@@ -729,36 +779,55 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        setting_frame = tk.Frame(self)
+        setting_frame = tk.Frame(self, bg=self.settings.back_color)
         setting_frame.pack(anchor="center")
         setting_content = []
         self.buttons.append(setting_frame)
+        print("Setting frame created")
 
-        setting_label = tk.Label(setting_frame, text="SETTINGS", font=20)
+        setting_label = tk.Label(setting_frame, text="SETTINGS", font=("Arial Black", 20), bg=self.settings.back_color, fg=self.settings.title_color)
         setting_label.pack(side="top",pady=10)
         self.buttons.append(setting_label)
+        print("Setting label created")
 
         index = 0
-        for setting in self.config.settings_name:
-            
-            
+        for setting in self.settings.settings_name:
+            print(self.settings.settings_name)
+            print(setting)
             setting = setting.capitalize()
-            set = tk.Frame(setting_frame)
+            set = tk.Frame(setting_frame, bg=self.settings.back_color)
             set.pack(anchor="n",pady=5)
             self.buttons.append(set)
 
 
-            label = tk.Label(set, text=setting, width=10)
+            label = tk.Label(set, text=setting, width=10, bg=self.settings.back_color,fg=self.settings.title_color)
             label.pack(side="left",padx=3)
             self.buttons.append(label)
 
             entry = tk.Entry(set)
             entry.pack(side="right", padx=3)
-            entry.insert(0, self.config.settings_value[index])
+            entry.insert(0, self.settings.settings_value[index])
             self.buttons.append(entry)
             setting_content.append(entry)
 
             index += 1
+
+            
+        colorframe = tk.Frame(setting_frame,bg=self.settings.back_color)
+        colorframe.pack(side="bottom")
+        self.buttons.append(colorframe)
+
+        label = tk.Label(colorframe, bg=self.settings.back_color, fg=self.settings.title_color,text="Color Selection")
+        label.pack(side="top")
+        self.buttons.append(label)
+        
+        colors = ["black", "white"]
+        for c in colors:
+            button = tk.Button(colorframe, bg=c,borderwidth=5,highlightcolor="yellow",highlightthickness=5, command= lambda c=c: (self.update_color(c), self.settings.savecolor(c)),width=2,height=1)
+            button.pack(side="left",padx=5)
+            self.buttons.append(button)
+
+            
         
         save_button = tk.Button(setting_frame, text="SAVE", command=lambda: self.setting_change(setting_content))
         save_button.pack(side="bottom",pady=5)
@@ -779,8 +848,10 @@ class MainWindow(tk.Tk):
                 self.geometry(Y)
             elif X == 1:
                 self.title(Y)
+            elif X == 2:
+                self.bg(Y)
             X += 1
-        self.config.save(savelist)
+        self.settings.save(savelist)
 
 
             
