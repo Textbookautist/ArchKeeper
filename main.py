@@ -401,6 +401,14 @@ class MainWindow(tk.Tk):
         label.pack(side="top",pady=10)
         self.buttons.append(label)
 
+        rarityframe = tk.Frame(self,bg=self.settings.back_color)
+        rarityframe.pack()
+        self.buttons.append(rarityframe)
+
+        raritydisplay = tk.Label(rarityframe, text=item_rarity)
+        raritydisplay.pack(anchor="center",pady=3)
+        self.buttons.append(raritydisplay)
+
         typeframe = tk.Frame(self,bg=self.settings.back_color)
         typeframe.pack()
         self.buttons.append(typeframe)
@@ -409,13 +417,6 @@ class MainWindow(tk.Tk):
         typedisplay.pack(anchor="center",pady=3)
         self.buttons.append(typedisplay)
 
-        rarityframe = tk.Frame(self,bg=self.settings.back_color)
-        rarityframe.pack()
-        self.buttons.append(rarityframe)
-
-        raritydisplay = tk.Label(rarityframe, text=item_rarity)
-        raritydisplay.pack(anchor="center",pady=3)
-        self.buttons.append(raritydisplay)
 
         keyframe = tk.Frame(self,bg=self.settings.back_color)
         keyframe.pack()
@@ -429,7 +430,7 @@ class MainWindow(tk.Tk):
         descframe.pack()
         self.buttons.append(descframe)
 
-        descplay = tk.Label(descframe, text=item_desc,wraplength=400, justify="left",height=20,width=50)
+        descplay = tk.Label(descframe, text=item_desc,wraplength=300, justify="left",height=20,width=50)
         descplay.pack(anchor="center",pady=3)
         self.buttons.append(descplay)
 
