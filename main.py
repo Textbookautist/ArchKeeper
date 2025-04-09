@@ -4,11 +4,12 @@ import os
 import shutil
 import tkinter as tk
 
-finn_encoding = "utf-8"
+finn_encoding = "utf-8" # Used for file storing and reading with Ä Ö and Ås
 
 # Configs and directories:
 if True:
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.abspath(__file__)) # Finds script itself, 
+    #                                                       used to construct further paths
     configs_dir = os.path.join(script_dir,"configs")
     items_dir = os.path.join(script_dir,"items")
     spells_dir = os.path.join(script_dir,"spells")
@@ -24,9 +25,6 @@ if True:
     color_file = os.path.join(configs_dir,"maincolor")
     charorigin_file = os.path.join(configs_dir,"character_origin")
 
-def item_delete(path):
-    shutil.rmtree(path)
-
 
 
 class Config:
@@ -40,6 +38,7 @@ class Config:
         self.settings_name = []
         self.settings_value = []
         self.color = ""
+
         for setting in self.configs:
             print(f"Accessing setting {setting}")
             content = setting.strip()
@@ -50,6 +49,7 @@ class Config:
                 self.title = content[1]
             self.settings_name.append(content[0])
             self.settings_value.append(content[1])
+        
         with open(color_file, "r") as file:
             coloringbook = file.read()
             colori = coloringbook.strip()
@@ -65,8 +65,10 @@ class Config:
             self.title_color = "black"
                 
             
-        print(self.settings_name,self.settings_value)
+        print(self.settings_name,
+              self.settings_value)
 
+    # Saves list of settings
     def save(self, list):
         X = 0
         lines = []
@@ -98,11 +100,13 @@ class Config:
             self.settings_name.append(content[0])
             self.settings_value.append(content[1])
 
+    # Saves color to file.
     def savecolor(self, color):
         with open(color_file, "w") as file:
             file.write(color)
 
-
+# Mainwindow class is for the user GUI and all its scenes.
+# Creates itself as a tkinter window.
 class MainWindow(tk.Tk):
     def __init__(self, screenName = None, baseName = None, className = "Tk", useTk = True, sync = False, use = None):
         super().__init__(screenName, baseName, className, useTk, sync, use)
@@ -129,6 +133,9 @@ class MainWindow(tk.Tk):
             self.settings.title_color = "black"
         self.settings_menu()
 
+
+
+
     def quitconfirm(self, button):
         button.destroy()
         self.buttons.remove(button)
@@ -144,6 +151,9 @@ class MainWindow(tk.Tk):
         b_decline = tk.Button(quit_frame,text="Decline", command=self.GUI_init)
         b_decline.pack(side="right",padx=3)
         self.buttons.append(b_decline)
+
+
+
 
     def charcreator_change_val(self, target, value, cplabel, splabel): # Character creator +1 -1 button activation
 
@@ -196,6 +206,9 @@ class MainWindow(tk.Tk):
                 sptext = f"Characteristic Points Remaining: {str(current_sp)}"
                 splabel.config(text=sptext)
 
+
+
+
     def character_creator(self): # Enter character creator
         for button in self.buttons:
             button.destroy()
@@ -241,6 +254,7 @@ class MainWindow(tk.Tk):
 
         for line in lines:
             content = line.split("=")
+
             # frames for the three characteristics
             if content[0] == "name":
                 continue
@@ -248,6 +262,7 @@ class MainWindow(tk.Tk):
                 charframe = tk.Frame(mainframe,bg=self.settings.back_color)
                 charframe.pack(side="left",padx=15)
                 self.buttons.append(charframe)
+
             #buttons for characteristics and their skills
             if content[0] == "body" or content[0] == "mind" or content[0] == "soul":
                 color = colors[0]
@@ -255,53 +270,82 @@ class MainWindow(tk.Tk):
                 char = content[0].capitalize()
                 val = content[1]
 
-                buttonframe = tk.Frame(charframe,bg=self.settings.back_color)
+                buttonframe = tk.Frame(charframe,
+                                       bg=self.settings.back_color)
                 buttonframe.pack(side="top",pady=5)
                 self.buttons.append(buttonframe)
 
-                mainbutton = tk.Button(buttonframe,  text=f"{char}: {val}",width=10, bg=color, font=("Arial Black", 8))
+                mainbutton = tk.Button(buttonframe, 
+                                       text=f"{char}: {val}",
+                                       width=10,
+                                       bg=color,
+                                       font=("Arial Black", 8))
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
-                redu_button = tk.Button(buttonframe, text="-1", command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),width=8)
+                redu_button = tk.Button(buttonframe,
+                                        text="-1",
+                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),
+                                        width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
-                incr_button = tk.Button(buttonframe, text="+1", command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),width=8)
+                incr_button = tk.Button(buttonframe,
+                                        text="+1",
+                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),
+                                        width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
             else:
                 char = content[0].capitalize()
                 val = content[1]
 
-                buttonframe = tk.Frame(charframe,bg=self.settings.back_color)
+                buttonframe = tk.Frame(charframe,
+                                       bg=self.settings.back_color)
                 buttonframe.pack(side="top",pady=2)
                 self.buttons.append(buttonframe)
 
-                mainbutton = tk.Button(buttonframe,  text=f"{char}: {val}",width=12, bg=color)
+                mainbutton = tk.Button(buttonframe, 
+                                       text=f"{char}: {val}",
+                                       width=12, 
+                                       bg=color)
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
-                redu_button = tk.Button(buttonframe, text="-1", command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),width=8)
+                redu_button = tk.Button(buttonframe,
+                                        text="-1",
+                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),
+                                        width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
-                incr_button = tk.Button(buttonframe, text="+1", command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),width=8)
+                incr_button = tk.Button(buttonframe, text="+1",
+                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),
+                                        width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
             
 
         
 
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
+        back_main = tk.Button(self, text="Back",
+                              font=10,
+                              command=self.GUI_init,
+                              width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
+
+
+
 
     def character_loader(self):
         for entity in self.buttons:
             entity.destroy()
         
-        mainlabel = tk.Label(self,text="Characters",bg=self.settings.back_color,font=("Arial Black", 30),fg=self.settings.title_color)
+        mainlabel = tk.Label(self,text="Characters",
+                             bg=self.settings.back_color,
+                             font=("Arial Black", 30),
+                             fg=self.settings.title_color)
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
@@ -309,20 +353,30 @@ class MainWindow(tk.Tk):
         for file in os.listdir(characters_dir):
             characters.append(file)
         if len(characters) == 0:
-            label = tk.Label(self, text="You have no characters", fg=self.settings.title_color,bg=self.settings.back_color,font=20)
+            label = tk.Label(self, text="You have no characters",
+                             fg=self.settings.title_color,
+                             bg=self.settings.back_color,
+                             font=20)
             label.pack(anchor="center")
             self.buttons.append(label)
         
 
         
 
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.GUI_init,
+                              width=20,
+                              bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
     
     def GUI_init(self): # MAIN
+        # Cleanup
         for entity in self.buttons:
             entity.destroy()
+
         mainframe = tk.Frame(self, bg=self.settings.back_color)
         mainframe.pack(anchor="center")
         self.buttons.append(mainframe)
@@ -354,15 +408,19 @@ class MainWindow(tk.Tk):
     
 
     def open_item(self, item_path, itemname):
-        print(item_path)
+        print(item_path) # Debugging
+
+        # Cleanup
         for entity in self.buttons:
             entity.destroy()
+
         item_desc = None
         item_keys = None
         item_rarity = None
         item_type = None
         stuff_on_file = []
         keywords = []
+
         for file in os.listdir(item_path):
             print(item_path)
             print(file)
@@ -371,6 +429,7 @@ class MainWindow(tk.Tk):
             stuff_name = file
             property = [stuff_name, stuff_path]
             stuff_on_file.append(property)
+
         for property in stuff_on_file:
             if property[0] == "type":
                 with open(property[1], "r", encoding=finn_encoding) as file:
@@ -391,13 +450,17 @@ class MainWindow(tk.Tk):
                 for word in keywords:
                     keystring = f"{keystring}, {word}"
                 item_keys = keystring
-        print(itemname)
+
+        print(itemname) # Debugging
         print(item_type)
         print(item_rarity)
         print(item_keys)
         print(item_desc)
 
-        label = tk.Label(self, text=itemname, font=("Arial Black", 20),fg=self.settings.title_color, bg=self.settings.back_color)
+        label = tk.Label(self, text=itemname,
+                         font=("Arial Black", 20),
+                         fg=self.settings.title_color,
+                         bg=self.settings.back_color)
         label.pack(side="top",pady=10)
         self.buttons.append(label)
 
@@ -418,31 +481,49 @@ class MainWindow(tk.Tk):
         self.buttons.append(typedisplay)
 
 
-        keyframe = tk.Frame(self,bg=self.settings.back_color)
+        keyframe = tk.Frame(self,
+                            bg = self.settings.back_color)
         keyframe.pack()
         self.buttons.append(keyframe)
 
         keydis = tk.Label(keyframe, text = item_keys)
-        keydis.pack(anchor=("center"),pady=3)
+        keydis.pack(anchor = ("center"),
+                    pady = 3)
         self.buttons.append(keydis)
 
-        descframe = tk.Frame(self,bg=self.settings.back_color)
+        descframe = tk.Frame(self,
+                             bg = self.settings.back_color)
         descframe.pack()
         self.buttons.append(descframe)
 
-        descplay = tk.Label(descframe, text=item_desc,wraplength=300, justify="left",height=20,width=50)
+        descplay = tk.Label(descframe,
+                            text=item_desc,
+                            wraplength = 300,
+                            justify = "left",
+                            height = 20,
+                            width = 50)
         descplay.pack(anchor="center",pady=3)
         self.buttons.append(descplay)
 
-        bottomframe = tk.Frame(self,bg=self.settings.back_color)
+        bottomframe = tk.Frame(self,
+                               bg = self.settings.back_color)
         bottomframe.pack(side="bottom")
         self.buttons.append(bottomframe)
 
-        back_items = tk.Button(bottomframe, text="Back", font=10, command=self.item_menu,width=20,bg="pink")
+        back_items = tk.Button(bottomframe,
+                               text="Back",
+                               font = 10,
+                               command=self.item_menu,
+                               width = 20,
+                               bg ="pink")
         back_items.grid(row=0,column=1)
         self.buttons.append(back_items)
 
-        delete_button = tk.Button(bottomframe, text="Delete", bg="red",width=8, command=lambda f = bottomframe, p = item_path: self.item_delete_confirm(delete_button, f, p))
+        delete_button = tk.Button(bottomframe,
+                                  text = "Delete",
+                                  bg = "red",
+                                  width = 8,
+                                  command=lambda f = bottomframe, p = item_path: self.item_delete_confirm(delete_button, f, p))
         delete_button.grid(row=0,column=0)
         self.buttons.append(delete_button)
 
@@ -450,18 +531,30 @@ class MainWindow(tk.Tk):
         edit_button.grid(row=0,column=2)
         self.buttons.append(edit_button)
     
+    
+    
+    
+    # Destroy delete-button, replace with confirm button
     def item_delete_confirm(self, db, f, p):
-        db.destroy()
-        confirmbutton = tk.Button(f, text="Confirm Deletion", command=lambda p=p:(item_delete(p), self.item_menu()))
+        db.destroy() 
+
+        confirmbutton = tk.Button(f, text="Confirm Deletion",
+                                  command=lambda p=p:(item_delete(p), 
+                                                      self.item_menu()))
         confirmbutton.grid(row=0,column=0)
         self.buttons.append(confirmbutton)
 
-    
+
+
+    # Item menu where items are displayed. Leads to item creation menu.
     def item_menu(self):
         for entity in self.buttons:
             entity.destroy()
 
-        mainlabel = tk.Label(self, text="Item Menu", font=("Arial Black", 20),bg=self.settings.back_color, fg=self.settings.title_color)
+        mainlabel = tk.Label(self, text="Item Menu",
+                             font=("Arial Black", 20),
+                             bg=self.settings.back_color,
+                             fg=self.settings.title_color)
         mainlabel.pack(side="top",pady=10)
         self.buttons.append(mainlabel)
 
@@ -469,9 +562,11 @@ class MainWindow(tk.Tk):
         items_frame.pack(anchor="center")
         self.buttons.append(items_frame)
 
-        item_display_frame = tk.Frame(items_frame,bg=self.settings.back_color)
+        item_display_frame = tk.Frame(items_frame,
+                                      bg=self.settings.back_color)
         item_display_frame.pack(anchor="center")
         self.buttons.append(items_frame)
+
         X = 0
         Y = 0
         for item in os.listdir(items_dir):
@@ -481,7 +576,9 @@ class MainWindow(tk.Tk):
             itemname = item.strip()
             itemname = itemname.replace("_", " ")
             if os.path.isdir(item_path):
-                itembutton = tk.Button(item_display_frame,width=20, text=itemname, command=lambda this_item=item_path, itemname=itemname: self.open_item(this_item, itemname))
+                itembutton = tk.Button(item_display_frame,width=20,
+                                       text=itemname,
+                                       command=lambda this_item=item_path, itemname=itemname: self.open_item(this_item, itemname))
                 itembutton.grid(row=X, column=Y)
                 self.buttons.append(itembutton)
                 if X == 4:
@@ -490,19 +587,30 @@ class MainWindow(tk.Tk):
                 else:
                     X += 1
         
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init,width=20,bg="red")
+        back_main = tk.Button(self, text="Back", font=10,
+                              command=self.GUI_init,
+                              width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
-        newitembutton = tk.Button(self, text="Add New Item",width=20,font=10,bg="yellow",command=self.item_creation)
+        newitembutton = tk.Button(self, text="Add New Item",
+                                  width=20,font=10,bg="yellow",
+                                  command=self.item_creation)
         newitembutton.pack(side="bottom")
         self.buttons.append(newitembutton)
 
+
+
+
+    # Menu for item creation
     def item_creation(self):
         for entity in self.buttons:
             entity.destroy()
 
-        creationlabel = tk.Label(self,font=("Arial Black", 10),text="Item Creation",bg=self.settings.back_color,fg=self.settings.font_color)
+        creationlabel = tk.Label(self,font=("Arial Black", 10),
+                                 text="Item Creation",
+                                 bg=self.settings.back_color,
+                                 fg=self.settings.font_color)
         creationlabel.pack(side="top",pady=5)
         self.buttons.append(creationlabel)
 
@@ -514,7 +622,8 @@ class MainWindow(tk.Tk):
         nameframe.pack()
         self.buttons.append(nameframe)
 
-        nameentry = tk.Entry(nameframe,width=40, font=("Arial Black", 8))
+        nameentry = tk.Entry(nameframe,width=40, 
+                             font=("Arial Black", 8))
         nameentry.insert(0, "Input item name")
         nameentry.pack(side="left")
         self.buttons.append(nameentry)
@@ -529,11 +638,14 @@ class MainWindow(tk.Tk):
         rarityentry.pack(side="left")
         self.buttons.append(rarityentry)
 
-        raritybutton = tk.Button(rarityframe, text="P", command=lambda: self.get_saved_entries("item_rarity", target=rarityentry), height=1,width=2)
+        raritybutton = tk.Button(rarityframe, text="P",
+                                 command=lambda: self.get_saved_entries("item_rarity", target=rarityentry),
+                                 height=1,width=2)
         raritybutton.pack(side="right")
         self.buttons.append(raritybutton)
 
-        rarityclear = tk.Button(rarityframe, text="C", command=lambda: rarityentry.delete(0, tk.END))
+        rarityclear = tk.Button(rarityframe, text="C",
+                                command=lambda: rarityentry.delete(0, tk.END))
         rarityclear.pack(side="right")
         self.buttons.append(rarityclear)
 
@@ -547,11 +659,14 @@ class MainWindow(tk.Tk):
         typeentry.pack(side="left")
         self.buttons.append(typeentry)
 
-        typebutton = tk.Button(typeframe,text="P",command=lambda: self.get_saved_entries("item_type", target=typeentry), height=1, width=2)
+        typebutton = tk.Button(typeframe,text="P",
+                               command=lambda: self.get_saved_entries("item_type", target=typeentry),
+                               height=1, width=2)
         typebutton.pack(side="right")
         self.buttons.append(typebutton)
 
-        typeclear = tk.Button(typeframe,text="C",command=lambda: typeentry.delete(0, tk.END))
+        typeclear = tk.Button(typeframe,text="C",
+                              command=lambda: typeentry.delete(0, tk.END))
         typeclear.pack(side="right")
         self.buttons.append(typeclear)
 
@@ -564,17 +679,16 @@ class MainWindow(tk.Tk):
         keyentry.pack(side="left")
         self.buttons.append(keyentry)
 
-        keybutton = tk.Button(keyframe,text="P",command=lambda: self.get_saved_entries("item_keyword", target=keyentry), height=1, width=2)
+        keybutton = tk.Button(keyframe,text="P",
+                              command=lambda: self.get_saved_entries("item_keyword", target=keyentry),
+                              height=1, width=2)
         keybutton.pack(side="right")
         self.buttons.append(keybutton)
 
-        keyclear = tk.Button(keyframe,text="C", command=lambda: keyentry.delete(0, tk.END))
+        keyclear = tk.Button(keyframe,text="C",
+                             command=lambda: keyentry.delete(0, tk.END))
         keyclear.pack(side="right")
         self.buttons.append(keyclear)
-
-
-
-        ###
 
         descframe = tk.Frame(self)
         descframe.pack(anchor="center",pady=5)
@@ -588,12 +702,14 @@ class MainWindow(tk.Tk):
         desctext.pack()
         self.buttons.append(desctext)
         
-        back_main = tk.Button(self, text="Back", font=10, command=self.item_menu,width=20,bg="red")
+        back_main = tk.Button(self, text="Back",
+                              font=10,
+                              command=self.item_menu,width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
         save_item = tk.Button(self, text = "Save item", font=10, command=lambda: (
-            print(keyentry.get()),  # Print the keys value
+            print(keyentry.get()),  # Print the keys value for debugging
             self.save_new_item(
                 nameentry, 
                 typeentry, 
@@ -603,18 +719,20 @@ class MainWindow(tk.Tk):
             ),
             self.item_menu()
         ))
-
-
         save_item.pack(side="bottom")
         self.buttons.append(save_item)
 
 
+
+
+    # When user presses "P"-button, this function runs fetching data of the selected type
     def get_saved_entries(self, origin, target):
-        temp = []
-        extracted = []
+        temp = [] # Instead of clearing the scene as usual, this is used to clean the canvas
+        extracted = [] # Data extracted from file
         used_file = None
         title = ""
-        match origin:
+
+        match origin: # Matches the selected type to the correct file
             case "item_type":
                 used_file = types_items_file
                 title = "Type Selection"
@@ -641,14 +759,11 @@ class MainWindow(tk.Tk):
         new_.pack(side="bottom")
         temp.append(new_)
 
-
-
         buttonframe = tk.Frame(canvas)
         buttonframe.pack(side="bottom")
         
         temp.append(buttonframe)
         
-
         with open(used_file, "r") as file:
             for line in file:
                 extracted.append(str(line))
@@ -656,10 +771,12 @@ class MainWindow(tk.Tk):
         X = 0
         Y = 0
         for x in extracted:
-            if origin != "item_keyword":
-                button = tk.Button(buttonframe, text=x, width=10,height=2, command=lambda insertable=x: (target.delete(0, tk.END), target.insert(0, insertable)))
+            if origin != "item_keyword": # Keywords act a bit differently than type and rarity, as they are separated with ", "s
+                button = tk.Button(buttonframe, text=x, width=10,height=2,
+                                   command=lambda insertable=x: (target.delete(0, tk.END), target.insert(0, insertable)))
             else:
-                button = tk.Button(buttonframe, text=x, width=10, height=2, command=lambda l=len(target.get()), insertable=(x+", "): target.insert(l, insertable))
+                button = tk.Button(buttonframe, text=x, width=10, height=2,
+                                   command=lambda l=len(target.get()), insertable=(x+", "): target.insert(l, insertable))
             button.grid(row=Y, column=X)
             if X == 3:
                 X = 0
@@ -668,6 +785,10 @@ class MainWindow(tk.Tk):
                 X += 1
             temp.append(button)
 
+
+
+
+    # Honstly I can't remember what this was for.
     def append_new_entry(self, used_file, temp):
         for item in temp:
             item.destroy()
@@ -686,7 +807,9 @@ class MainWindow(tk.Tk):
         label.pack(side="top")
         temppu.append(label)
 
-        closebutton = tk.Button(entrycanvas, text="Close", command=lambda: (all(item.destroy() for item in temppu)))
+        closebutton = tk.Button(entrycanvas,
+                                text="Close",
+                                command=lambda: (all(item.destroy() for item in temppu)))
         closebutton.pack(side="bottom")
         temppu.append(closebutton)
 
@@ -709,10 +832,16 @@ class MainWindow(tk.Tk):
         newntry.grid(row=X, column=Y)
         temppu.append(newntry)
 
-        savebuttons = tk.Button(entrycanvas, text="Save", command= lambda: self.save_action(newntry.get(),content, temppu, used_file))
+        savebuttons = tk.Button(entrycanvas,
+                                text="Save",
+                                command= lambda: self.save_action(newntry.get(),content, temppu, used_file))
         savebuttons.pack(side="bottom")
         temppu.append(newntry)
 
+
+
+
+    # Creates the new enntry to the selected list, be it type, rarity or keyword.
     def save_action(self, new, content, temppu, used_file):
         print(new)
         print(temppu)
@@ -723,19 +852,28 @@ class MainWindow(tk.Tk):
         self.insert_new_list(used_file, content)  # Insert the new list
         self.item_creation()  # Call the item creation method
 
+
+
+
+    # Saves the new list content to their own file
     def insert_new_list(self, chosenfile, list):
         with open(chosenfile, "w") as file:
             for line in list:
                 if line != "" and line != " ":
                     file.write(str(line)+"\n")
 
+
+
+
     def save_new_item(self, name_entry, type_entry, rarity_entry, keys_entry, desc_entry):
-        keys = keys_entry.get() # Tää ilmeisesti ottaa listan, stringin sijaan o.O
+
+        # Get variables from entries
+        keys = keys_entry.get()
         name = name_entry.get()
         rarity = rarity_entry.get()
         type = type_entry.get()
         desc = desc_entry.get("1.0", "end")
-        print(keys) # Mut tää sit taas printtaa stringin eikä listaa ? O.o
+        print(keys)
         name_with_lines = name.replace(" ", "_")
         new_item_path = os.path.join(items_dir, name_with_lines)
         
@@ -744,11 +882,12 @@ class MainWindow(tk.Tk):
             stringi = f"{stringi}, {i}"
 
         endkeys = []
-        keylist = keys.split(", ") # Ja sit tää täällä sanoo et 'list' object has no attribute 'split' ? -_-
+        keylist = keys.split(", ")
         for key in keylist:
             endkeys.append(key)
         print(endkeys)
 
+        # Finalize item saving process
         os.makedirs(new_item_path, exist_ok=True)
         name_path = os.path.join(new_item_path, "name")
         with open(name_path, "w", encoding=finn_encoding) as file:
@@ -775,36 +914,46 @@ class MainWindow(tk.Tk):
 
         
         
-    
+    # Scene for settings display. 
     def settings_menu(self):
+        # Clean previous scene
         for entity in self.buttons:
             entity.destroy()
-
+        
+        # Settings are shown in this frame vvvvv
         setting_frame = tk.Frame(self, bg=self.settings.back_color)
         setting_frame.pack(anchor="center")
         setting_content = []
         self.buttons.append(setting_frame)
         print("Setting frame created")
 
-        setting_label = tk.Label(setting_frame, text="SETTINGS", font=("Arial Black", 20), bg=self.settings.back_color, fg=self.settings.title_color)
+        setting_label = tk.Label(setting_frame, text="SETTINGS",
+                                 font=("Arial Black", 20),
+                                 bg=self.settings.back_color,
+                                 fg=self.settings.title_color)
         setting_label.pack(side="top",pady=10)
         self.buttons.append(setting_label)
         print("Setting label created")
 
+        # Fetch settings geometry and title
         index = 0
         for setting in self.settings.settings_name:
             print(self.settings.settings_name)
             print(setting)
             setting = setting.capitalize()
+            #Setting frame
             set = tk.Frame(setting_frame, bg=self.settings.back_color)
             set.pack(anchor="n",pady=5)
             self.buttons.append(set)
-
-
-            label = tk.Label(set, text=setting, width=10, bg=self.settings.back_color,fg=self.settings.title_color)
+            # Setting label
+            label = tk.Label(set,
+                             text=setting,
+                             width=10,
+                             bg=self.settings.back_color,
+                             fg=self.settings.title_color)
             label.pack(side="left",padx=3)
             self.buttons.append(label)
-
+            # Setting entry
             entry = tk.Entry(set)
             entry.pack(side="right", padx=3)
             entry.insert(0, self.settings.settings_value[index])
@@ -813,32 +962,46 @@ class MainWindow(tk.Tk):
 
             index += 1
 
-            
-        colorframe = tk.Frame(setting_frame,bg=self.settings.back_color)
+        # Fetch setting color
+        colorframe = tk.Frame(setting_frame,
+                              bg=self.settings.back_color)
         colorframe.pack(side="bottom")
         self.buttons.append(colorframe)
 
-        label = tk.Label(colorframe, bg=self.settings.back_color, fg=self.settings.title_color,text="Color Selection")
+        label = tk.Label(colorframe,
+                         bg=self.settings.back_color,
+                         fg=self.settings.title_color,
+                         text="Color Selection")
         label.pack(side="top")
         self.buttons.append(label)
         
         colors = ["black", "white"]
         for c in colors:
-            button = tk.Button(colorframe, bg=c,borderwidth=5,highlightcolor="yellow",highlightthickness=5, command= lambda c=c: (self.update_color(c), self.settings.savecolor(c)),width=2,height=1)
+            button = tk.Button(colorframe,
+                               bg=c,
+                               borderwidth=5,
+                               highlightcolor="yellow",
+                               highlightthickness=5, 
+                               command= lambda c=c: (self.update_color(c), # Updates current theme color
+                                                     self.settings.savecolor(c)), # Saves current theme color
+                                                     width=2,
+                                                     height=1)
             button.pack(side="left",padx=5)
             self.buttons.append(button)
 
-            
-        
+        # Throws the values to be activated and saved.
         save_button = tk.Button(setting_frame, text="SAVE", command=lambda: self.setting_change(setting_content))
         save_button.pack(side="bottom",pady=5)
 
-        print(setting_content)
-        
+        # Return to main menu scene
         back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
-    
+
+
+
+
+    # Inputs come from the settings menu, and affect the screen geometry, title and background color. Through here they move to configs class to be saved on file.
     def setting_change(self, inputlist):
         X = 0
         savelist = []
@@ -849,17 +1012,19 @@ class MainWindow(tk.Tk):
                 self.geometry(Y)
             elif X == 1:
                 self.title(Y)
-            elif X == 2:
-                self.bg(Y)
             X += 1
         self.settings.save(savelist)
 
 
-            
+
+
+# Used to delete items from the items directory, through item profiles.
+def item_delete(path):
+    shutil.rmtree(path)
 
 
 
-root = MainWindow()
+root = MainWindow() # Creates the main window during startup
 
 
 
