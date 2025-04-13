@@ -544,6 +544,8 @@ class MainWindow(tk.Tk):
         item_desc = None
         item_keys = None
         item_rarity = None
+        item_value = None
+        item_weight = None
         item_type = None
         stuff_on_file = []
         keywords = []
@@ -567,6 +569,16 @@ class MainWindow(tk.Tk):
             elif property[0] == "desc":
                 with open(property[1], "r", encoding=finn_encoding) as file:
                     item_desc = file.read()
+            elif property[0] == "weight":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    getgot = file.read()
+                    if getgot != " " and getgot != "":
+                        item_weight = getgot
+            elif property[0] == "value":
+                with open(property[1], "r", encoding=finn_encoding) as file:
+                    getgot = file.read()
+                    if getgot != " " and getgot != "":
+                        item_value = getgot
             
             elif property[0] == "keywords":
                 with open(property[1], "r", encoding=finn_encoding) as file:
@@ -617,6 +629,28 @@ class MainWindow(tk.Tk):
         keydis.pack(anchor = ("center"),
                     pady = 3)
         self.buttons.append(keydis)
+
+        if item_weight != None:
+            weightframe = tk.Frame(self,
+                                   bg=self.settings.back_color)
+            weightframe.pack()
+            self.buttons.append(weightframe)
+
+            weightdis = tk.Label(weightframe, text = item_weight)
+            weightdis.pack(anchor="center",
+                           pady=3)
+            self.buttons.append(weightdis)
+
+        if item_value != None:
+            valueframe = tk.Frame(self,
+                                  bg=self.settings.back_color)
+            valueframe.pack()
+            self.buttons.append(valueframe)
+
+            valuedis = tk.Label(valueframe, text = item_value)
+            valuedis.pack(anchor="center",
+                          pady=3)
+            self.buttons.append(valuedis)
 
         descframe = tk.Frame(self,
                              bg = self.settings.back_color)
@@ -815,7 +849,26 @@ class MainWindow(tk.Tk):
         keyclear.pack(side="right")
         self.buttons.append(keyclear)
 
+        weightframe = tk.Frame(inputframe)
+        weightframe.pack()
+        self.buttons.append(weightframe)
+
+        weightentry = tk.Entry(weightframe, width=40)
+        weightentry.insert(0, "Input item weight, or leave empty")
+        weightentry.pack(side="right")
+        self.buttons.append(weightentry)
+
+        priceframe = tk.Frame(inputframe)
+        priceframe.pack()
+        self.buttons.append(priceframe)
+        priceentry = tk.Entry(priceframe, width=40)
+        priceentry.insert(0, "Input item value")
+        priceentry.pack(side="right")
+        self.buttons.append(priceentry)
+
+
         descframe = tk.Frame(self)
+
         descframe.pack(anchor="center",pady=5)
         self.buttons.append(descframe)
 
@@ -839,7 +892,9 @@ class MainWindow(tk.Tk):
                 nameentry, 
                 typeentry, 
                 rarityentry, 
-                keyentry, 
+                keyentry,
+                weightentry,
+                priceentry,
                 desctext
             ),
             self.item_menu()
@@ -980,13 +1035,15 @@ class MainWindow(tk.Tk):
                     file.write(str(line)+"\n")
 
 
-    def save_new_item(self, name_entry, type_entry, rarity_entry, keys_entry, desc_entry):
+    def save_new_item(self, name_entry, type_entry, rarity_entry, keys_entry, weight_entry, value_entry, desc_entry):
 
         # Get variables from entries
         keys = keys_entry.get()
         name = name_entry.get()
         rarity = rarity_entry.get()
         type = type_entry.get()
+        weight = weight_entry.get()
+        value = value_entry.get()
         desc = desc_entry.get("1.0", "end")
         print(keys)
         name_with_lines = name.replace(" ", "_")
@@ -1020,6 +1077,14 @@ class MainWindow(tk.Tk):
         type_path = os.path.join(new_item_path, "type")
         with open(type_path, "w", encoding=finn_encoding) as file:
             file.write(type)
+        
+        value_path = os.path.join(new_item_path, "value")
+        with open(value_path, "w", encoding=finn_encoding) as file:
+            file.write(value)
+        
+        weight_path = os.path.join(new_item_path, "weight")
+        with open(weight_path, "w", encoding=finn_encoding) as file:
+            file.write(weight)
 
         descpath = os.path.join(new_item_path, "desc")
         with open(descpath, "w", encoding=finn_encoding) as file:
