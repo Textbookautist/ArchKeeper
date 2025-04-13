@@ -3,6 +3,7 @@
 import os # Used to find the script and create paths for file management
 import shutil # Used to remove items, (characters, features, spells, kind of anything really. Not yet implemented)
 import tkinter as tk # Runs the GUI
+from PIL import Image, ImageTk
 
 finn_encoding = "utf-8" # Used for file storing and reading with Ä Ö and Ås
 
@@ -28,6 +29,13 @@ if True:
     settings_file = os.path.join(configs_dir, "Settings") # Stores screen geometry and title-text
     color_file = os.path.join(configs_dir,"maincolor") # Stores theme
     charorigin_file = os.path.join(configs_dir,"character_origin") # Stores starting characteristics for creation
+
+# icon directories
+if True:
+    icon_item_dir = os.path.join(arts_dir,"items")
+    icon_stuff_dir = os.path.join(icon_item_dir,"stuff")
+    icon_wearables_dir = os.path.join(icon_item_dir, "wearables")
+    icon_weapons_dir = os.path.join(icon_item_dir, "weapons")
 
 
 
@@ -636,7 +644,7 @@ class MainWindow(tk.Tk):
             weightframe.pack()
             self.buttons.append(weightframe)
 
-            weightdis = tk.Label(weightframe, text = item_weight)
+            weightdis = tk.Label(weightframe, text = f"Weight: {item_weight}")
             weightdis.pack(anchor="center",
                            pady=3)
             self.buttons.append(weightdis)
@@ -647,7 +655,7 @@ class MainWindow(tk.Tk):
             valueframe.pack()
             self.buttons.append(valueframe)
 
-            valuedis = tk.Label(valueframe, text = item_value)
+            valuedis = tk.Label(valueframe, text = f"Value: {item_value}")
             valuedis.pack(anchor="center",
                           pady=3)
             self.buttons.append(valuedis)
@@ -661,7 +669,7 @@ class MainWindow(tk.Tk):
                             text=item_desc,
                             wraplength = 300,
                             justify = "left",
-                            height = 20,
+                            height = 15,
                             width = 50)
         descplay.pack(anchor="center",pady=3)
         self.buttons.append(descplay)
@@ -692,9 +700,7 @@ class MainWindow(tk.Tk):
         edit_button.grid(row=0,column=2)
         self.buttons.append(edit_button)
     
-    
-    
-    
+
     # Destroy delete-button, replace with confirm button
     def item_delete_confirm(self, db, f, p):
         db.destroy() 
@@ -704,7 +710,6 @@ class MainWindow(tk.Tk):
                                                       self.item_menu()))
         confirmbutton.grid(row=0,column=0)
         self.buttons.append(confirmbutton)
-
 
 
     # Item menu where items are displayed. Leads to item creation menu.
@@ -879,6 +884,15 @@ class MainWindow(tk.Tk):
         desctext = tk.Text(descframe, width=50,height=5)
         desctext.pack()
         self.buttons.append(desctext)
+
+        iconlabel = tk.Label(self)
+
+        iconbutton = tk.Button(self, text="ICON", command=lambda l=iconlabel: self.get_icon(l))
+        iconbutton.pack()
+        self.buttons.append(iconbutton)
+        
+        iconlabel.pack()
+        self.buttons.append(iconlabel)
         
         back_main = tk.Button(self, text="Back",
                               font=10,
@@ -901,12 +915,74 @@ class MainWindow(tk.Tk):
         ))
         save_item.pack(side="bottom")
         self.buttons.append(save_item)
+    
+    def get_icon(self, target):
+        temp = []
+        displayed = []
 
+        canvas = tk.Toplevel(self)
+        canvas.geometry("300x300")
+        canvas.title("Icon Selection")
+        temp.append(canvas)
+
+        categories = tk.Frame(canvas)
+        categories.pack()
+        temp.append(categories)
+
+        showables = tk.Frame(canvas)
+        showables.pack()
+        temp.append(showables)
+
+        for icontype in os.listdir(icon_item_dir):
+            iconpath = os.path.join(icon_item_dir,icontype)
+            text = icontype.capitalize()
+            button = tk.Button(categories, 
+                               text=text, 
+                               command=lambda i=iconpath: self.display_icons(i, showables, displayed, target))
+            button.pack(side="left")
+
+        closebutton = tk.Button(canvas,text="Close", 
+                                command=lambda x=temp: ([item.destroy() for item in x], target.configure(image=y)))
+        closebutton.pack(side="bottom")
+        temp.append(closebutton)
+
+    def display_icons(self, path, target, list, label):
+        for item in list:
+            item.destroy()
+        
+        icons = []
+        X = 0
+        Y = 0
+        for icon in os.listdir(path):
+            print(path)
+            iconpath = os.path.join(path,icon)
+            print(iconpath)
+            o_image = Image.open(iconpath)
+            image = o_image.resize((32,32), 
+                                   Image.LANCZOS)
+            imagee = ImageTk.PhotoImage(image)
+            icons.append(imagee)
+            
+            button = tk.Button(target, 
+                               image=imagee, 
+                               command=lambda p=imagee, l=label: self.setimage(p,l))
+            button.grid(row=Y,column=X)
+            list.append(button)
+            if X == 5:
+                Y += 1
+                X = 0
+            else:
+                X += 1
+
+    def setimage(self, image, label):
+        label.image_ref = image
+        label.config(image=image)
 
     # When user presses "P"-button, this function runs fetching data of the selected type
     def get_saved_entries(self, origin, target):
         temp = [] # Instead of clearing the scene as usual, this is used to clean the canvas
         extracted = [] # Data extracted from file
+        list_of_contentlists = []
         used_file = None
         title = ""
 
@@ -920,8 +996,12 @@ class MainWindow(tk.Tk):
             case "item_keyword":
                 used_file = keywords_items_file
                 title = "Keyword Selection"
+        quicktest = tk.Toplevel(root)
+        quicktest.geometry("200x200")
+        quicktest.title("UWU")
+        temp.append(quicktest)
 
-        canvas = tk.Canvas(root, width=400, height=400, bg="gray")
+        canvas = tk.Canvas(quicktest, width=400, height=400, bg="gray")
         canvas.pack(fill="both",expand=True)
         temp.append(canvas)
 
@@ -946,8 +1026,23 @@ class MainWindow(tk.Tk):
             for line in file:
                 extracted.append(str(line))
         extracted.sort()
+        if len(extracted) > 8:
+            newlist = []
+            X = 0
+            for entry in extracted:
+                newlist.append(entry)
+                X += 1
+                if X == 8:
+                    list_of_contentlists.append(newlist)
+                    newlist = []
+                    X = 0
         X = 0
         Y = 0
+        Z = 0
+
+        for entry in list_of_contentlists[Z]:
+            print(entry)
+
         for x in extracted:
             if origin != "item_keyword": # Keywords act a bit differently than type and rarity, as they are separated with ", "s
                 button = tk.Button(buttonframe, text=x, width=10,height=2,
@@ -1015,7 +1110,7 @@ class MainWindow(tk.Tk):
         temppu.append(newntry)
 
 
-    # Creates the new enntry to the selected list, be it type, rarity or keyword.
+    # Creates the new entry to the selected list, be it type, rarity or keyword.
     def save_action(self, new, content, temppu, used_file):
         print(new)
         print(temppu)
