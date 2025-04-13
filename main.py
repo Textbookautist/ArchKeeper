@@ -15,6 +15,10 @@ if True:
     spells_dir = os.path.join(script_dir,"spells") # Stores spells (Unimplemented)
     characters_dir = os.path.join(script_dir,"characters") # Stores characters (Started)
     feature_dir = os.path.join(script_dir,"features") # Stores character features (Unimplemented)
+    dev_dir = os.path.join(script_dir, "developer") # Contains changelog and other micellaneous development related stuff
+    changelog_dir = os.path.join(dev_dir, "changelogs")
+    devnotes_dir = os.path.join(dev_dir, "notes")
+    arts_dir = os.path.join(script_dir, "arts")
 
 # files in directories:
 if True:
@@ -372,6 +376,125 @@ class MainWindow(tk.Tk):
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
     
+
+    def devnotes(self):
+        for entity in self.buttons:
+            entity.destroy()
+
+        label = tk.Label(self,text="Notes", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label.pack(side="top")
+        self.buttons.append(label)
+
+        noteframe = tk.Frame(self,bg=self.settings.back_color)
+        noteframe.pack(expand=True)
+        self.buttons.append(noteframe)
+
+        for file in os.listdir(devnotes_dir):
+            print(file)
+            filepath = os.path.join(devnotes_dir,file)
+            filebutton = tk.Button(noteframe, text=f"Note: {file}",width=10,height=2, command=lambda f=filepath, o=self.devnotes:self.read_dev_file(f, o))
+            filebutton.pack()
+            self.buttons.append(filebutton)
+
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.devlogs,
+                              width=20,
+                              bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+    def read_dev_file(self, path, origin):
+        lines = []
+        for entity in self.buttons:
+            entity.destroy()
+
+        
+
+        textframe = tk.Frame(self,bg="gray")
+        textframe.pack(anchor="center")
+        self.buttons.append(textframe)
+
+        with open(path, "r") as file:
+            for line in file:
+                lines.append(str(line))
+        text = ""
+        for line in lines:
+            text += line+"\n"
+        
+        label = tk.Label(textframe, text=text)
+        label.pack()
+        self.buttons.append(label)
+
+
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=origin,
+                              width=20,
+                              bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+    def changelog(self):
+        for entity in self.buttons:
+            entity.destroy()
+
+        label = tk.Label(self,text="Changelogs", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label.pack(side="top")
+        self.buttons.append(label)
+
+        logframe = tk.Frame(self,bg=self.settings.back_color)
+        logframe.pack(expand=True)
+        self.buttons.append(logframe)
+
+        for file in os.listdir(changelog_dir):
+            print(file)
+            filepath = os.path.join(changelog_dir,file)
+            filebutton = tk.Button(logframe, text=f"Version {file}",width=10,height=2, command=lambda f=filepath, o=self.changelog:self.read_dev_file(f, o))
+            filebutton.pack()
+            self.buttons.append(filebutton)
+
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.devlogs,
+                              width=20,
+                              bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+    def devlogs(self):
+        for entity in self.buttons:
+            entity.destroy()
+        
+        label = tk.Label(self,text="Devlogs", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label.pack(side="top")
+        self.buttons.append(label)
+
+        frame = tk.Frame(self,bg=self.settings.back_color)
+        frame.pack()
+        self.buttons.append(frame)
+
+        notebut = tk.Button(frame, text="Notes", command=self.devnotes)
+        notebut.pack()
+        self.buttons.append(notebut)
+
+        changebut = tk.Button(frame, text="Changelog", command=self.changelog)
+        changebut.pack()
+        self.buttons.append(changebut)
+
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.GUI_init,
+                              width=20,
+                              bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+
     def GUI_init(self): # MAIN
         # Cleanup
         for entity in self.buttons:
@@ -401,7 +524,11 @@ class MainWindow(tk.Tk):
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
 
-        quit_button = tk.Button(self,text="QUIT",command=lambda: self.quitconfirm(quit_button))
+        devbut = tk.Button(mainframe,width=20, text="Developer Logs", command=self.devlogs)
+        devbut.pack(side="top",pady=2)
+        self.buttons.append(devbut)
+
+        quit_button = tk.Button(self,text="QUIT",command=lambda: self.quitconfirm(quit_button), bg="red",font=10)
         quit_button.pack(side="bottom")
         self.buttons.append(quit_button)
 
