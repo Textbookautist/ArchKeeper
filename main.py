@@ -167,7 +167,7 @@ class MainWindow(tk.Tk):
 
 
 
-    def charcreator_change_val(self, target, value, cplabel, splabel): # Character creator +1 -1 button activation
+    def charcreator_change_val(self, target, childlist,parent, value, cplabel, splabel): # Character creator +1 -1 button activation
 
         # Extract values
         cpval = cplabel.cget("text")
@@ -194,6 +194,14 @@ class MainWindow(tk.Tk):
                 target.config(text=targettext)
                 cptext = f"Characteristic Points Remaining: {str(current_cp)}"
                 cplabel.config(text=cptext)
+                for btn in childlist:
+                    btnval = btn.cget("text")
+                    btnval = btnval.split(": ")
+                    print(btnval)
+                    valval = int(btnval[1])
+                    valval += 1
+                    newtext = f"{btnval[0]}: {valval}"
+                    btn.config(text=newtext)
             elif currentval > 0 and value == "-1":
                 currentval -= 1
                 current_cp += 1
@@ -201,8 +209,20 @@ class MainWindow(tk.Tk):
                 target.config(text=targettext)
                 cptext = f"Characteristic Points Remaining: {str(current_cp)}"
                 cplabel.config(text=cptext)
+                for btn in childlist:
+                    btnval = btn.cget("text")
+                    btnval = btnval.split(": ")
+                    print(btnval)
+                    valval = int(btnval[1])
+                    valval -= 1
+                    newtext = f"{btnval[0]}: {valval}"
+                    btn.config(text=newtext)
 
         else:
+            parentbtn = parent
+            parentval = parentbtn.cget("text")
+            parentval = parentval.split(": ")
+            valval = int(parentval[1])
             if current_sp > 0 and value == "+1":
                 currentval += 1
                 current_sp -= 1
@@ -210,7 +230,7 @@ class MainWindow(tk.Tk):
                 target.config(text=targettext)
                 sptext = f"Skill Points Remaining: {str(current_sp)}"
                 splabel.config(text=sptext)
-            elif currentval > 0 and value == "-1":
+            elif (currentval > 0 and value == "-1") and currentval > valval:
                 currentval -= 1
                 current_sp += 1
                 targettext = f"{targetcontent[0]}: {str(currentval)}"
@@ -263,7 +283,13 @@ class MainWindow(tk.Tk):
         colors = ["red", "light blue", "yellow"]
         color = None
         
+        bodybuttons = []
+        mindbuttons = []
+        soulbuttons = []
+        parentbuttons = []
 
+        buttonsets = [bodybuttons, mindbuttons, soulbuttons]
+        phase = 0
         for line in lines:
             content = line.split("=")
 
@@ -271,6 +297,10 @@ class MainWindow(tk.Tk):
             if content[0] == "name":
                 continue
             if content[0] == "body" or content[0] == "mind" or content[0] == "soul":
+                if content[0] == "mind":
+                    phase = 1
+                elif content[0] == "soul":
+                    phase = 2
                 charframe = tk.Frame(mainframe,bg=self.settings.back_color)
                 charframe.pack(side="left",padx=15)
                 self.buttons.append(charframe)
@@ -294,17 +324,18 @@ class MainWindow(tk.Tk):
                                        font=("Arial Black", 8),command=lambda c=content[0]: show_popup(c))
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
+                parentbuttons.insert(phase, mainbutton)
 
                 redu_button = tk.Button(buttonframe,
                                         text="-1",
-                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton, l=buttonsets[phase]: self.charcreator_change_val(b,l,None, "-1", CPlabel, SPlabel),
                                         width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
                 incr_button = tk.Button(buttonframe,
                                         text="+1",
-                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton, l=buttonsets[phase]: self.charcreator_change_val(b,l,None, "+1",CPlabel, SPlabel),
                                         width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
@@ -325,15 +356,17 @@ class MainWindow(tk.Tk):
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
+                buttonsets[phase].append(mainbutton)
+
                 redu_button = tk.Button(buttonframe,
                                         text="-1",
-                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "-1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton, p=parentbuttons[phase]: self.charcreator_change_val(b,None,p, "-1",CPlabel, SPlabel),
                                         width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
                 incr_button = tk.Button(buttonframe, text="+1",
-                                        command=lambda b=mainbutton: self.charcreator_change_val(b, "+1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton, p=parentbuttons[phase]: self.charcreator_change_val(b,None,p, "+1",CPlabel, SPlabel),
                                         width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
