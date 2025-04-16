@@ -208,14 +208,14 @@ class MainWindow(tk.Tk):
                 current_sp -= 1
                 targettext = f"{targetcontent[0]}: {str(currentval)}"
                 target.config(text=targettext)
-                sptext = f"Characteristic Points Remaining: {str(current_sp)}"
+                sptext = f"Skill Points Remaining: {str(current_sp)}"
                 splabel.config(text=sptext)
             elif currentval > 0 and value == "-1":
                 currentval -= 1
                 current_sp += 1
                 targettext = f"{targetcontent[0]}: {str(currentval)}"
                 target.config(text=targettext)
-                sptext = f"Characteristic Points Remaining: {str(current_sp)}"
+                sptext = f"Skill Points Remaining: {str(current_sp)}"
                 splabel.config(text=sptext)
 
 
@@ -251,7 +251,7 @@ class MainWindow(tk.Tk):
         CPlabel.pack(side="left")
         self.buttons.append(CPlabel)
 
-        SPlabel = tk.Label(pointframe, text = "Skill Points remaining: 5")
+        SPlabel = tk.Label(pointframe, text = "Skill Points Remaining: 5")
         SPlabel.pack(side="right")
         self.buttons.append(SPlabel)
 
@@ -291,7 +291,7 @@ class MainWindow(tk.Tk):
                                        text=f"{char}: {val}",
                                        width=10,
                                        bg=color,
-                                       font=("Arial Black", 8))
+                                       font=("Arial Black", 8),command=lambda c=content[0]: show_popup(c))
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
@@ -320,7 +320,8 @@ class MainWindow(tk.Tk):
                 mainbutton = tk.Button(buttonframe, 
                                        text=f"{char}: {val}",
                                        width=12, 
-                                       bg=color)
+                                       bg=color,
+                                       command=lambda c=content[0]: show_popup(c))
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
@@ -1289,8 +1290,140 @@ class MainWindow(tk.Tk):
         self.settings.save(savelist)
 
 
+def show_popup(source):
+    global root
+    
+    popup = tk.Toplevel(root, bg=root.settings.back_color)
+    popup.geometry("400x400")
+    popup.title(f"CODEX POPUP: {source.capitalize()}")
 
+    
+    l_text = None
+    d_text = None
+    d_text2 = None
+    match source:
+        case "body": # All the 'beat em up'-stuff goes here.
+            l_text = "Characteristic: Body"
+            d_text = "Body is the main characteristic for those who use and manipulate the environment through pure muscle and might."
+            d_text2 = "It allows for breaking things with hands, moving things so heavy no-one else could, and instilling respect with mere presence."
+            r_text = "Represents the total greatness of your physical temple. Weak against: Soul. Strong against: Mind"
+        case "constitution":
+            l_text = "Skill: Constitution"
+            d_text = "This skill allows you to withstand poisons and germs."
+            d_text2 = "In addition, increased constitution also grants you bonus HP."
+            r_text = "Represents your body-health and well-being."
+        case "endurance":
+            l_text = "Skill: Endurance"
+            d_text = "With endurance you can withstand under physical pressure and strife."
+            d_text2 = "Unlike with might that touches on more short-term execution, endurance focuses on long-term stability and balance."
+            r_text = "Represents your lung-capacity and muscle-strength under long-term duress."
+        case "cunning":
+            l_text = "Skill: Cunning"
+            d_text = "With a cunning body you can slip through narrow spaces and move faster in shadows without being seen."
+            d_text2 = "Useful for scoundrels and rogues of all types."
+            r_text = "Represents your stealth, fine hand-eye coordination and ability to not be seen."
+        case "might":
+            l_text = "Skill: Might"
+            d_text = "A raw short-term burst of power is granted by might. Used to operate cannons by yourself, or violently tear open steel-doors."
+            d_text2 = "Might also affects how much damage you deal with physical attacks."
+            r_text = "Represents your capacity to perform short-term actions requiring physical prowess."
+        case "size":
+            l_text = "Skill: Size"
+            d_text = "Your carrying capacity is affected by how great a body you have, but increased size also increases the capacity by quite the margin."
+            d_text2 = "With size your presence is also greatly affected, making you seem like the bigger threat. Useful when taunting your enemies."
+            r_text = "Represents your height, weight and mass. Can easily be turned into a tool of intimidation."
+        ####
+        case "mind": # All the guns, traps and explosives go here
+            l_text = "Characteristic: Mind"
+            d_text = "Strategists and tacticians use their minds to construct the most deceitful traps and plans. With great mind comes great responsibility."
+            d_text2 = "Your mind characteristic determines how much you know, how much you learn, and how well you can analyze."
+            r_text = "Represents the strength of your mind. Weak against: Body. Strong against: Soul."
+        case "academics":
+            l_text = "Skill: Academics"
+            d_text = "An important skill for historians and lifelong learners. Academics grants you the passive ability to know random tidbits of information."
+            d_text2 = "The higher your academics-score, the more in-depth information about subjects you can muster."
+            r_text = "Represents your body of knowledge, affecting the number of proficiencies you can have."
+        case "creativity":
+            l_text = "Skill: Creativity"
+            d_text = "With creativity you can build items like weapons and armor, find alternative uses for objects and solve problems pure logic cannot."
+            d_text2 = "With increased creativity you can craft, maintain and upgrade better items, both for yourself and your team."
+            r_text = "Represents your creative mind, granting more crafting opportunities."
+        case "focus":
+            l_text = "Skill: Focus"
+            d_text = "With focus you can delve into your mind-palace during lockpicking, puzzle-solving and problem-analysis."
+            d_text2 = "The greater your focus, the harder puzzles you can attempt, the harder you are to distract, the easier to determine weaknesses."
+            r_text = "Represents your ability to not be distracted, and number of attempts you can try something."
+        case "resilience":
+            l_text = "Skill: Resilience"
+            d_text = "The resilience of mind is your gift against mind-control and manipulation."
+            d_text2 = "With resilience you are less likely to fall victim to mindgames, under effects of emotions like fear, charm and so on."
+            r_text = "Represents your resistance against spells and effects that affect mind."
+        case "tactics":
+            l_text = "Skill: Tactics"
+            d_text = "Tactics opens up a new alley of advancement. You are able to create and use traps, bombs and schemes."
+            d_text2 = "Each point in tactics opens new heights for pyromanic and dangerous activities."
+            r_text = "Represents your tactical mind and capabilities"
+        ####
+        case "soul": # All the magic and religious stuff is here.
+            l_text = "Characteristic: Soul"
+            d_text = "While others use muscles to break doors, and mind to find a way around it, you walk through it."
+            d_text2 = "Soul opens up paths of arcane, granting you the ability to not just bend it, but weave it."
+            r_text = "Represents the strength of your soul. Weak against: Mind. Strong against: Body"
+        case "arcana":
+            l_text = "SKill: Arcana"
+            d_text = "Your aptitude to magic, the Arcana, is the key to how many spells you can know, how strong ones you can know."
+            d_text2 = "Points in arcana determine the strength of your spells, what rituals you can perform, and so on. Extremely important for mages."
+            r_text = "Represents your magical abilities."
+        case "connection":
+            l_text = "Skill: Connection"
+            d_text = "With connection you can sense the feelings, emotions, even thoughts of others. It is both a skill of great good, and great evil."
+            d_text2 = "You can manipulate others. You can use their fears, or calm them. You can make friends, or break friendships of others."
+            r_text = "Represents your connection with not just the emotions of others, but also with nature itself."
+        case "spirit":
+            l_text = "Skill: Spirit"
+            d_text = "With spirit you can separate your soul from your body for short periods of time. In this form, you are able to do things others consider impossible."
+            d_text2 = "The higher your spirit, the greater the acts you can perform outside your body."
+            r_text = "Represents your ability to interact with objects outside your mortal shell."
+        case "faith":
+            l_text = "Skill: Faith"
+            d_text = "You understand and feel the presence of divinity and those unholy. With faith, one can turn the tide of battle through miracles of prayer."
+            d_text2 = "Clerics and priests, through faith alone have access to spells and rituals that grant communication with and summoning of holy and unholy beings."
+            r_text = "Represents your connection with the heights of divinity, and depths of the unholy."
+        case "sight":
+            l_text = "Skill: Sight"
+            d_text = "With sight you can see things in the other dimensions. You can observe ghosts, see through doors, follow people in the past."
+            d_text2 = "Some claim they reached such heights with sight, that they were even able to see not just events of the past, but in the future as well."
+            r_text = "Represents your ability to see in ways others cannot. Greatly affected by your other Soul-skills."
 
+    wrappi = 200
+
+    label = tk.Label(popup,text=l_text, bg=root.settings.back_color, fg=root.settings.title_color, font=("Arial Black", 10))
+    label.pack(side="top",pady=5)
+
+    displayframe1 = tk.Frame(popup)
+    displayframe1.pack(pady=5)
+
+    textplay1 = tk.Label(displayframe1, text=d_text,wraplength=wrappi)
+    textplay1.pack()
+
+    disframe2 = tk.Frame(popup)
+    disframe2.pack(pady=5)
+
+    ddisplay = tk.Label(disframe2, text=d_text2,wraplength=wrappi)
+    ddisplay.pack()
+
+    disframe3 = tk.Frame(popup)
+    disframe3.pack(pady=5)
+
+    textlast = tk.Label(disframe3, text=r_text, wraplength=wrappi)
+    textlast.pack()
+
+    infotext = tk.Label(popup,text="This popup is closed after 30 seconds.",  bg=root.settings.back_color, fg=root.settings.title_color)
+    infotext.pack(side="bottom")
+
+    popup.after(30000, popup.destroy)
+
+    
 # Used to delete items from the items directory, through item profiles.
 def item_delete(path):
     shutil.rmtree(path)
