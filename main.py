@@ -558,6 +558,10 @@ class MainWindow(tk.Tk):
         loadcharacter.pack(side="top",pady=2)
         self.buttons.append(loadcharacter)
 
+        featurebutton = tk.Button(mainframe,width=20, text="Features Menu", command=self.features_menu)
+        featurebutton.pack(side="top",pady=2)
+        self.buttons.append(featurebutton)
+
         itembutton = tk.Button(mainframe,width=20,text="Items Menu", command=self.item_menu)
         itembutton.pack(side="top",pady=2)
         self.buttons.append(itembutton)
@@ -574,7 +578,85 @@ class MainWindow(tk.Tk):
         quit_button.pack(side="bottom")
         self.buttons.append(quit_button)
 
+    def clear(self):
+        for item in self.buttons:
+            item.destroy()
     
+    def eliminate(self, object):
+        self.buttons.remove(object)
+        object.destroy()
+
+    def add(self, object):
+        self.buttons.append(object)
+
+    def features_menu(self):
+        for item in self.buttons:
+            item.destroy()
+
+        features = []
+
+        for feat in os.listdir(feature_dir):
+            item = []
+            featpath = os.path.join(feature_dir, feat)
+            total = feat, featpath
+            features.append(total)
+            print(f"Feature found in path {featpath}")
+        print("Inspecting all found features by name and path")
+        for item in features:
+            print(item)
+        
+        label = tk.Label(self, text="Feature Menu", font=("Arial Black", 20), bg=self.settings.back_color, fg=self.settings.title_color)
+        label.pack(side="top")
+        self.buttons.append(label)
+
+        mainframe = tk.Frame(self, bg=self.settings.back_color)
+        mainframe.pack(anchor="center")
+        self.buttons.append(mainframe)
+
+        featureframe = tk.Frame(mainframe)
+        featureframe.grid(row=0,column=1,padx=5)
+        self.add(featureframe)
+
+        nextpage = tk.Button(mainframe, text="NEXT", command=lambda: print("FEATURES NEXT-PAGE not yet implemented"))
+        nextpage.grid(row=0,column=2)
+        self.add(nextpage)
+
+        prevpage = tk.Button(mainframe, text="PREV", command=lambda: print("FEATURES PREV-PAGE not yet implemented"))
+        prevpage.grid(row=0,column=0)
+        self.add(prevpage)
+
+        if len(features) == 0:
+            infolabel = tk.Label(featureframe, text="No Features In Memory")
+            infolabel.pack()
+            self.add(infolabel)
+        else:
+            for item in features:
+                name = item[0].replace("_", " ")
+                name = name.capitalize()
+                btn = tk.Button(featureframe, text=name, command=lambda p=item[1]: self.codex_open("feature", p))
+                btn.pack()
+                self.add(btn)
+
+        back_main = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.GUI_init,
+                              width=20,
+                              bg="red")
+        back_main.pack(side="bottom")
+        self.buttons.append(back_main)
+
+    def codex_open(self, type, path):
+        self.clear()
+
+        back_feature = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.features_menu,
+                              width=20,
+                              bg="red")
+        back_feature.pack(side="bottom")
+        self.buttons.append(back_feature)
 
     def open_item(self, item_path, itemname):
         print(item_path) # Debugging
@@ -1455,6 +1537,7 @@ def show_popup(source):
     infotext.pack(side="bottom")
 
     popup.after(30000, popup.destroy)
+
 
     
 # Used to delete items from the items directory, through item profiles.
