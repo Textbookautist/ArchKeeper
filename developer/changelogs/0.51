@@ -1,3 +1,7 @@
 0.51
 Added icon selection to item creation.
 -Doesn't yet get saved with the image, but it's a step
+
+Point buy in character creation works now.
+-Next step is to move the given information to phase 2 screen.
+-Send the characteristic list and skill list over and process in phase 2.
