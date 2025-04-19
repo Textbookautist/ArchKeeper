@@ -156,13 +156,17 @@ class MainWindow(tk.Tk):
         quit_frame.pack(side="bottom")
         self.buttons.append(quit_frame)
 
-        b_confirm = tk.Button(quit_frame, text="Confirm",command=lambda:quit())
+        b_confirm = tk.Button(quit_frame, text="Confirm",command=lambda:quit(),width=10,bg="red")
         b_confirm.pack(side="left",padx=3)
         self.buttons.append(b_confirm)
+        b_confirm.bind("<Enter>", lambda event: b_confirm.config(bg="yellow"))
+        b_confirm.bind("<Leave>", lambda event: b_confirm.config(bg="red"))
 
-        b_decline = tk.Button(quit_frame,text="Decline", command=self.GUI_init)
+        b_decline = tk.Button(quit_frame,text="Decline", command=self.GUI_init,width=10,bg="red")
         b_decline.pack(side="right",padx=3)
         self.buttons.append(b_decline)
+        b_decline.bind("<Enter>", lambda event: b_decline.config(bg="yellow"))
+        b_decline.bind("<Leave>", lambda event: b_decline.config(bg="red"))
 
 
 
@@ -374,12 +378,7 @@ class MainWindow(tk.Tk):
 
         
 
-        back_main = tk.Button(self, text="Back",
-                              font=10,
-                              command=self.GUI_init,
-                              width=20,bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
+        self.create_back_btn("main")
 
 
 
@@ -409,15 +408,22 @@ class MainWindow(tk.Tk):
 
         
 
-        back_main = tk.Button(self,
+        self.create_back_btn("main")
+    
+    def create_back_btn(self, type):
+        match type:
+            case "main":
+                back_main = tk.Button(self,
                               text="Back",
                               font=10,
                               command=self.GUI_init,
                               width=20,
                               bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
-    
+                back_main.pack(side="bottom")
+                self.buttons.append(back_main)
+                back_main.bind("<Enter>", lambda event: back_main.config(bg="yellow"))
+                back_main.bind("<Leave>", lambda event: back_main.config(bg="red"))
+
 
     def devnotes(self):
         for entity in self.buttons:
@@ -555,6 +561,7 @@ class MainWindow(tk.Tk):
         # Cleanup
         for entity in self.buttons:
             entity.destroy()
+        
 
         mainframe = tk.Frame(self, bg = self.settings.back_color)
         mainframe.pack(anchor="center")
@@ -573,36 +580,49 @@ class MainWindow(tk.Tk):
                                  command=self.character_creator)
         newcharacter.pack(side="top",pady=2)
         self.buttons.append(newcharacter)
+        newcharacter.bind("<Enter>", lambda event: newcharacter.config(bg="yellow"))
+        newcharacter.bind("<Leave>", lambda event: newcharacter.config(bg="white"))
+        
 
         loadcharacter = tk.Button(mainframe, width=20,
                                   text= "Load Character",
                                   command=self.character_loader)
         loadcharacter.pack(side="top",pady=2)
         self.buttons.append(loadcharacter)
+        loadcharacter.bind("<Enter>", lambda event: loadcharacter.config(bg="yellow"))
+        loadcharacter.bind("<Leave>", lambda event: loadcharacter.config(bg="white"))
 
         featurebutton = tk.Button(mainframe,width=20,
                                   text="Features Menu",
                                   command=self.features_menu)
         featurebutton.pack(side="top",pady=2)
         self.buttons.append(featurebutton)
+        featurebutton.bind("<Enter>", lambda event: featurebutton.config(bg="yellow"))
+        featurebutton.bind("<Leave>", lambda event: featurebutton.config(bg="white"))
 
         itembutton = tk.Button(mainframe,width=20,
                                text="Items Menu",
                                command=self.item_menu)
         itembutton.pack(side="top",pady=2)
         self.buttons.append(itembutton)
+        itembutton.bind("<Enter>", lambda event: itembutton.config(bg="yellow"))
+        itembutton.bind("<Leave>", lambda event: itembutton.config(bg="white"))
 
         settings_button = tk.Button(mainframe,width=20,
                                     text="Settings",
                                     command=self.settings_menu)
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
+        settings_button.bind("<Enter>", lambda event: settings_button.config(bg="yellow"))
+        settings_button.bind("<Leave>", lambda event: settings_button.config(bg="white"))
 
         devbut = tk.Button(mainframe,width=20,
                            text="Developer Logs",
                            command=self.devlogs)
         devbut.pack(side="top",pady=2)
         self.buttons.append(devbut)
+        devbut.bind("<Enter>", lambda event: devbut.config(bg="yellow"))
+        devbut.bind("<Leave>", lambda event: devbut.config(bg="white"))
 
         quit_button = tk.Button(self,text="QUIT",
                                 command=lambda: self.quitconfirm(quit_button),
@@ -688,14 +708,7 @@ class MainWindow(tk.Tk):
                 btn.pack()
                 self.add(btn)
 
-        back_main = tk.Button(self,
-                              text="Back",
-                              font=10,
-                              command=self.GUI_init,
-                              width=20,
-                              bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
+        self.create_back_btn("main")
 
     def codex_open(self, type, path, name):
         self.clear()
@@ -1047,11 +1060,7 @@ class MainWindow(tk.Tk):
                 else:
                     X += 1
         
-        back_main = tk.Button(self, text="Back", font=10,
-                              command=self.GUI_init,
-                              width=20,bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
+        self.create_back_btn("main")
 
         newitembutton = tk.Button(self, text="Add New Item",
                                   width=20,font=10,bg="yellow",
@@ -1193,6 +1202,9 @@ class MainWindow(tk.Tk):
                               command=self.item_menu,width=20,bg="red")
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
+
+        back_main.bind("<Enter>", lambda event: back_main.config(bg="yellow"))
+        back_main.bind("<Leave>", lambda event: back_main.config(bg="red"))
 
         save_item = tk.Button(self, text = "Save item", font=10, command=lambda: (
             print(keyentry.get()),  # Print the keys value for debugging
@@ -1563,9 +1575,7 @@ class MainWindow(tk.Tk):
         save_button.pack(side="bottom",pady=5)
 
         # Return to main menu scene
-        back_main = tk.Button(self, text="Back", font=10, command=self.GUI_init, width=20,bg="red")
-        back_main.pack(side="bottom")
-        self.buttons.append(back_main)
+        self.create_back_btn("main")
 
 
     # Inputs come from the settings menu, and affect the screen geometry, title and background color. Through here they move to configs class to be saved on file.
