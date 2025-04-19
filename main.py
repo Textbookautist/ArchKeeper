@@ -633,7 +633,7 @@ class MainWindow(tk.Tk):
             for item in features:
                 name = item[0].replace("_", " ")
                 name = name.capitalize()
-                btn = tk.Button(featureframe, text=name, command=lambda p=item[1]: self.codex_open("feature", p))
+                btn = tk.Button(featureframe, text=name, command=lambda p=item[1], n=item[0]: self.codex_open("feature", p, n))
                 btn.pack()
                 self.add(btn)
 
@@ -646,8 +646,42 @@ class MainWindow(tk.Tk):
         back_main.pack(side="bottom")
         self.buttons.append(back_main)
 
-    def codex_open(self, type, path):
+    def codex_open(self, type, path, name):
         self.clear()
+
+        name = name.replace("_", " ")
+        name = name.capitalize()
+
+        label = tk.Label(self, text=name.capitalize(), bg=self.settings.back_color, fg=self.settings.title_color, font=("Arial Black", 20))
+        label.pack()
+        self.add(label)
+
+        sublabel = tk.Label(self,text=type.capitalize(), bg=self.settings.back_color, font=("Arial Black", 10), fg=self.settings.title_color)
+        sublabel.pack()
+        self.add(sublabel)
+
+        thingpaths = []
+        for content in os.listdir(path):
+            contentpath = os.path.join(path, content)
+            thingpaths.append(contentpath)
+        
+        for item in thingpaths:
+            itemcontent = []
+            with open(item, "r") as file:
+                for line in file:
+                    content = str(line)
+                    content = content.split("=")
+                    itemcontent.append(content)
+
+            for thing in itemcontent:
+                thing_name = thing[0]
+                thing_value = thing[1]
+                print(thing_name)
+                print(thing_value)
+
+
+
+            
 
         back_feature = tk.Button(self,
                               text="Back",
