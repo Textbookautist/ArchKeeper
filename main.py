@@ -589,6 +589,19 @@ class MainWindow(tk.Tk):
     def add(self, object):
         self.buttons.append(object)
 
+    def feature_creation(self):
+        self.clear()
+
+        back_feature = tk.Button(self,
+                              text="Back",
+                              font=10,
+                              command=self.features_menu,
+                              width=20,
+                              bg="red")
+        back_feature.pack(side="bottom")
+        self.buttons.append(back_feature)
+
+
     def features_menu(self):
         for item in self.buttons:
             item.destroy()
@@ -649,39 +662,127 @@ class MainWindow(tk.Tk):
     def codex_open(self, type, path, name):
         self.clear()
 
-        name = name.replace("_", " ")
-        name = name.capitalize()
 
-        label = tk.Label(self, text=name.capitalize(), bg=self.settings.back_color, fg=self.settings.title_color, font=("Arial Black", 20))
-        label.pack()
-        self.add(label)
+        if type == "feature":
+            name = name.replace("_", " ")
+            name = name.capitalize()
 
-        sublabel = tk.Label(self,text=type.capitalize(), bg=self.settings.back_color, font=("Arial Black", 10), fg=self.settings.title_color)
-        sublabel.pack()
-        self.add(sublabel)
+            label = tk.Label(self, text=name.capitalize(), bg=self.settings.back_color, fg=self.settings.title_color, font=("Arial Black", 20))
+            label.pack()
+            self.add(label)
 
-        thingpaths = []
-        for content in os.listdir(path):
-            contentpath = os.path.join(path, content)
-            thingpaths.append(contentpath)
-        
-        for item in thingpaths:
-            itemcontent = []
-            with open(item, "r") as file:
-                for line in file:
-                    content = str(line)
-                    content = content.split("=")
-                    itemcontent.append(content)
+            sublabel = tk.Label(self,text=type.capitalize(), bg=self.settings.back_color, font=("Arial Black", 10), fg=self.settings.title_color)
+            sublabel.pack()
+            self.add(sublabel)
 
-            for thing in itemcontent:
-                thing_name = thing[0]
-                thing_value = thing[1]
-                print(thing_name)
-                print(thing_value)
+            lorepaths = []
+            requirements = []
+            effects = []
+            for content in os.listdir(path):
+                contentpath = os.path.join(path, content)
+                if content == "prerequisites":
+                    requirements.append(contentpath)
+                elif content == "effects":
+                    effects.append(contentpath)
+                else:
+                    lorepaths.append(contentpath)
+            print(f"Thingpaths: {lorepaths}")
 
+            reqlabel = tk.Label(self,bg=self.settings.back_color, fg=self.settings.title_color,text="-= Prerequisites =-")
+            reqlabel.pack()
+            self.add(reqlabel)
 
+            reqframe = tk.Frame(self, bg=self.settings.back_color)
+            reqframe.pack()
+            self.add(reqframe)
 
+            for path in requirements:
+                content = []
+                with open(path, "r") as file:
+                    for line in file:
+                        content.append(line.strip())
+                X = 0
+                Y = 0
+                for item in content:
+                    item = item.split("=")
+                    label = tk.Label(reqframe, text=f"{item[0].capitalize()}: {item[1]}")
+                    label.grid(row=Y,column=X,padx=3)
+                    if X <= 3:
+                        X += 1
+                    else:
+                        X = 0
+                        Y += 1
+                    self.add(label)
             
+            charlabel = tk.Label(self,bg=self.settings.back_color,fg=self.settings.title_color,text="-= Characteristic & Skill -Effects =-")
+            charlabel.pack()
+            self.add(charlabel)
+
+            pointframe = tk.Frame(self,bg=self.settings.back_color)
+            pointframe.pack()
+            self.add(pointframe)
+
+            traitlabel = tk.Label(self,bg=self.settings.back_color,fg=self.settings.title_color,text="-= Traits =-")
+            traitlabel.pack()
+            self.add(traitlabel)
+
+            traitframe = tk.Frame(self,bg=self.settings.back_color)
+            traitframe.pack()
+            self.add(traitframe)
+
+            for path in effects:
+                content = []
+                with open(path, "r") as file:
+                    for line in file:
+                        content.append(line.strip())
+                chareffect = []
+                skilleffect = []
+                traiteffect = []
+                for item in content:
+                    item = item.split("=")
+                    if item[0] != "trait":
+                        if item[0] != "body" and item[0] != "mind" and item[0] != "soul":
+                            skilleffect.append(item)
+                        else:
+                            chareffect.append(item)
+                    else:
+                        traiteffect.append(item)
+                X = 0
+                Y = 0
+                for item in chareffect:
+                    print(item)
+                    t1 = item[0].capitalize()
+                    t2 = item[1]
+                    label = tk.Label(pointframe, text=f"{t1}: {t2}",bg=self.settings.back_color)
+                    label.grid(row=Y, column=X, padx=3)
+                    self.add(label)
+                    if X <= 3:
+                        X += 1
+                    else:
+                        X = 0
+                        Y += 1
+
+                for item in skilleffect:
+                    print(item)
+                    t1 = item[0].capitalize()
+                    t2 = item[1]
+                    label = tk.Label(pointframe, text=f"{t1}: {t2}")
+                    label.grid(row=Y, column=X, padx=3)
+                    self.add(label)
+                    if X <= 3:
+                        X += 1
+                    else:
+                        X = 0
+                        Y += 1
+                print("Moving on to traiteffects")
+                for item in traiteffect:
+                    print(item)
+                    texti = item[1].capitalize()
+                    label = tk.Label(traitframe, text=f"-{texti}", wraplength=1000)
+                    label.pack(pady=3)
+                    self.add(label)
+
+
 
         back_feature = tk.Button(self,
                               text="Back",

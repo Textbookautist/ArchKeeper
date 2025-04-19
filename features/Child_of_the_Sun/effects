@@ -1,2 +1,4 @@
 faith=+1
-trait=You cannot be sunburned, and all fire-damage you take is reduced by 1 (to a minimum of 1).
+trait=Immunity against sunburns
+trait=All fire damage you take is reduced by 1 (, to a minimum of 1).
+trait=You cannot be blinded by sunlight
