@@ -1,3 +1,5 @@
+Todoes
+
 Finish up the character point buy : DONE. Needs to be sent over now
     Start codex to show what skills do. STARTED, and works in point buy
 
@@ -5,3 +7,5 @@ Add "paint" where the user can quickly make their own icons.
 Perhaps reuse the "artiist" program from last week?
 
 Add some database for the Archetype names.
+
+Make item-page look better -> Copy feature-reader if needed.

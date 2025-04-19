@@ -1,0 +1,9 @@
+19/4/2025
+Keyword ideas
+
+Currently the keywords are simply shoved into a single file, line by line.
+But more long-term mechanic would be to have a keyword creator, similar to item creator itself.
+Having the keyword TYPE as well could be beneficial. Item keyword, feature keyword, spell keyword.
+
+This would allow the creator to not only attach keywords to the items, but all the stuff that is attached to that keyword.
+Instead of an item only being given "+1" keyword, that keyword itself would attach "Attack and damage rolls made with this weapon gain a +1 bonus" trait.

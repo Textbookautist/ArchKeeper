@@ -423,7 +423,7 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        label = tk.Label(self,text="Notes", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label = tk.Label(self,text="Notes", font=("Arial Black", 30), fg=self.settings.title_color,bg=self.settings.back_color)
         label.pack(side="top")
         self.buttons.append(label)
 
@@ -434,7 +434,7 @@ class MainWindow(tk.Tk):
         for file in os.listdir(devnotes_dir):
             print(file)
             filepath = os.path.join(devnotes_dir,file)
-            filebutton = tk.Button(noteframe, text=f"Note: {file}",width=10,height=2, command=lambda f=filepath, o=self.devnotes:self.read_dev_file(f, o))
+            filebutton = tk.Button(noteframe, text=f"Note: {file}",width=20,height=2, command=lambda f=filepath, o=self.devnotes:self.read_dev_file(f, o))
             filebutton.pack()
             self.buttons.append(filebutton)
 
@@ -452,8 +452,6 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        
-
         textframe = tk.Frame(self,bg="gray")
         textframe.pack(anchor="center")
         self.buttons.append(textframe)
@@ -465,75 +463,91 @@ class MainWindow(tk.Tk):
         for line in lines:
             text += line+"\n"
         
-        label = tk.Label(textframe, text=text)
+        label = tk.Label(textframe, text=text, bg=self.settings.back_color, fg=self.settings.title_color, wraplength=500)
         label.pack()
         self.buttons.append(label)
 
 
         back_main = tk.Button(self,
-                              text="Back",
-                              font=10,
-                              command=origin,
-                              width=20,
-                              bg="red")
-        back_main.pack(side="bottom")
+                              text = "Back",
+                              font = 10,
+                              command = origin,
+                              width = 20,
+                              bg = "red")
+        back_main.pack(side = "bottom")
         self.buttons.append(back_main)
 
     def changelog(self):
         for entity in self.buttons:
             entity.destroy()
 
-        label = tk.Label(self,text="Changelogs", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label = tk.Label(self,text = "Changelogs",
+                         font = ("Arial Black", 30),
+                         fg = self.settings.title_color,
+                         bg = self.settings.back_color)
         label.pack(side="top")
         self.buttons.append(label)
 
-        logframe = tk.Frame(self,bg=self.settings.back_color)
-        logframe.pack(expand=True)
+        logframe = tk.Frame(self,
+                            bg = self.settings.back_color)
+        logframe.pack(expand = True)
         self.buttons.append(logframe)
 
         for file in os.listdir(changelog_dir):
             print(file)
             filepath = os.path.join(changelog_dir,file)
-            filebutton = tk.Button(logframe, text=f"Version {file}",width=10,height=2, command=lambda f=filepath, o=self.changelog:self.read_dev_file(f, o))
+            filebutton = tk.Button(logframe,
+                                   text = f"Version {file}",
+                                   width = 20,
+                                   height = 2,
+                                   command = lambda f = filepath,
+                                   o = self.changelog:self.read_dev_file(f, o))
             filebutton.pack()
             self.buttons.append(filebutton)
 
         back_main = tk.Button(self,
-                              text="Back",
-                              font=10,
+                              text = "Back",
+                              font = 10,
                               command=self.devlogs,
-                              width=20,
-                              bg="red")
-        back_main.pack(side="bottom")
+                              width = 20,
+                              bg = "red")
+        back_main.pack(side = "bottom")
         self.buttons.append(back_main)
 
     def devlogs(self):
         for entity in self.buttons:
             entity.destroy()
         
-        label = tk.Label(self,text="Devlogs", font=("Arial Black", 30), fg=self.settings.font_color,bg=self.settings.back_color)
+        label = tk.Label(self,text = "Devlogs",
+                         font = ("Arial Black", 30),
+                         fg = self.settings.title_color,
+                         bg = self.settings.back_color)
         label.pack(side="top")
         self.buttons.append(label)
 
-        frame = tk.Frame(self,bg=self.settings.back_color)
+        frame = tk.Frame(self,
+                         bg = self.settings.back_color)
         frame.pack()
         self.buttons.append(frame)
 
-        notebut = tk.Button(frame, text="Notes", command=self.devnotes)
+        notebut = tk.Button(frame,
+                            text = "Notes",
+                            command = self.devnotes)
         notebut.pack()
         self.buttons.append(notebut)
 
-        changebut = tk.Button(frame, text="Changelog", command=self.changelog)
+        changebut = tk.Button(frame, text = "Changelog",
+                              command = self.changelog)
         changebut.pack()
         self.buttons.append(changebut)
 
         back_main = tk.Button(self,
-                              text="Back",
-                              font=10,
-                              command=self.GUI_init,
-                              width=20,
-                              bg="red")
-        back_main.pack(side="bottom")
+                              text = "Back",
+                              font = 10,
+                              command = self.GUI_init,
+                              width = 20,
+                              bg = "red")
+        back_main.pack(side = "bottom")
         self.buttons.append(back_main)
 
 
@@ -542,39 +556,57 @@ class MainWindow(tk.Tk):
         for entity in self.buttons:
             entity.destroy()
 
-        mainframe = tk.Frame(self, bg=self.settings.back_color)
+        mainframe = tk.Frame(self, bg = self.settings.back_color)
         mainframe.pack(anchor="center")
         self.buttons.append(mainframe)
 
-        mainlabel = tk.Label(mainframe, text="Main Menu", font=("Arial Black", 30), fg=self.settings.title_color,bg=self.settings.back_color)
-        mainlabel.pack(side="top",pady=10)
+        mainlabel = tk.Label(mainframe,
+                             text = "Main Menu",
+                             font = ("Arial Black", 30),
+                             fg = self.settings.title_color,
+                             bg = self.settings.back_color)
+        mainlabel.pack(side = "top",pady = 10)
         self.buttons.append(mainlabel)
 
-        newcharacter = tk.Button(mainframe,width=20,text="New Character",command=self.character_creator)
+        newcharacter = tk.Button(mainframe,width=20,
+                                 text="New Character",
+                                 command=self.character_creator)
         newcharacter.pack(side="top",pady=2)
         self.buttons.append(newcharacter)
 
-        loadcharacter = tk.Button(mainframe, width=20, text= "Load Character", command=self.character_loader)
+        loadcharacter = tk.Button(mainframe, width=20,
+                                  text= "Load Character",
+                                  command=self.character_loader)
         loadcharacter.pack(side="top",pady=2)
         self.buttons.append(loadcharacter)
 
-        featurebutton = tk.Button(mainframe,width=20, text="Features Menu", command=self.features_menu)
+        featurebutton = tk.Button(mainframe,width=20,
+                                  text="Features Menu",
+                                  command=self.features_menu)
         featurebutton.pack(side="top",pady=2)
         self.buttons.append(featurebutton)
 
-        itembutton = tk.Button(mainframe,width=20,text="Items Menu", command=self.item_menu)
+        itembutton = tk.Button(mainframe,width=20,
+                               text="Items Menu",
+                               command=self.item_menu)
         itembutton.pack(side="top",pady=2)
         self.buttons.append(itembutton)
 
-        settings_button = tk.Button(mainframe,width=20, text="Settings", command=self.settings_menu)
+        settings_button = tk.Button(mainframe,width=20,
+                                    text="Settings",
+                                    command=self.settings_menu)
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
 
-        devbut = tk.Button(mainframe,width=20, text="Developer Logs", command=self.devlogs)
+        devbut = tk.Button(mainframe,width=20,
+                           text="Developer Logs",
+                           command=self.devlogs)
         devbut.pack(side="top",pady=2)
         self.buttons.append(devbut)
 
-        quit_button = tk.Button(self,text="QUIT",command=lambda: self.quitconfirm(quit_button), bg="red",font=10)
+        quit_button = tk.Button(self,text="QUIT",
+                                command=lambda: self.quitconfirm(quit_button),
+                                bg="red",font=10)
         quit_button.pack(side="bottom")
         self.buttons.append(quit_button)
 
@@ -618,7 +650,10 @@ class MainWindow(tk.Tk):
         for item in features:
             print(item)
         
-        label = tk.Label(self, text="Feature Menu", font=("Arial Black", 20), bg=self.settings.back_color, fg=self.settings.title_color)
+        label = tk.Label(self, text="Feature Menu",
+                         font=("Arial Black", 20),
+                         bg=self.settings.back_color,
+                         fg=self.settings.title_color)
         label.pack(side="top")
         self.buttons.append(label)
 
@@ -630,11 +665,13 @@ class MainWindow(tk.Tk):
         featureframe.grid(row=0,column=1,padx=5)
         self.add(featureframe)
 
-        nextpage = tk.Button(mainframe, text="NEXT", command=lambda: print("FEATURES NEXT-PAGE not yet implemented"))
+        nextpage = tk.Button(mainframe, text="NEXT",
+                             command=lambda: print("FEATURES NEXT-PAGE not yet implemented"))
         nextpage.grid(row=0,column=2)
         self.add(nextpage)
 
-        prevpage = tk.Button(mainframe, text="PREV", command=lambda: print("FEATURES PREV-PAGE not yet implemented"))
+        prevpage = tk.Button(mainframe, text="PREV",
+                             command=lambda: print("FEATURES PREV-PAGE not yet implemented"))
         prevpage.grid(row=0,column=0)
         self.add(prevpage)
 
@@ -646,7 +683,8 @@ class MainWindow(tk.Tk):
             for item in features:
                 name = item[0].replace("_", " ")
                 name = name.capitalize()
-                btn = tk.Button(featureframe, text=name, command=lambda p=item[1], n=item[0]: self.codex_open("feature", p, n))
+                btn = tk.Button(featureframe, text=name,
+                                command=lambda p=item[1],n=item[0]: self.codex_open("feature", p, n))
                 btn.pack()
                 self.add(btn)
 
@@ -667,11 +705,16 @@ class MainWindow(tk.Tk):
             name = name.replace("_", " ")
             name = name.capitalize()
 
-            label = tk.Label(self, text=name.capitalize(), bg=self.settings.back_color, fg=self.settings.title_color, font=("Arial Black", 20))
+            label = tk.Label(self, text=name.capitalize(),
+                             bg=self.settings.back_color,
+                             fg=self.settings.title_color, font=("Arial Black", 20))
             label.pack()
             self.add(label)
 
-            sublabel = tk.Label(self,text=type.capitalize(), bg=self.settings.back_color, font=("Arial Black", 10), fg=self.settings.title_color)
+            sublabel = tk.Label(self,text=type.capitalize(),
+                                bg=self.settings.back_color,
+                                font=("Arial Black", 10),
+                                fg=self.settings.title_color)
             sublabel.pack()
             self.add(sublabel)
 
