@@ -35,7 +35,7 @@ class MainWindow(tk.Tk):
         X = 0
         Y = 0
         for btn in btns:
-            button = tk.Button(mainframe, bg=colors[0], text=btn, width=2,height=8,fg=fcolors[0])
+            button = tk.Button(mainframe, bg=colors[0], text=btn, width=2,height=8,fg=fcolors[0], activebackground="purple")
             button.grid(row=X,column=Y)
             colors.remove(colors[0])
             fcolors.remove(fcolors[0])

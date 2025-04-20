@@ -130,6 +130,15 @@ class MainWindow(tk.Tk):
         self.title(self.settings.title)
         self.config(bg=self.settings.color)
         self.buttons = []
+
+        self.tooltipwin = tk.Toplevel(self)
+        self.tooltipwin.withdraw()  # Start hidden
+        self.tooltipwin.overrideredirect(True)  # Removes title bar for a floating effect
+        self.tooltipframe = tk.Frame(self.tooltipwin, bg="black", bd=3)
+        self.tooltipframe.pack()
+        self.tooltip =  tk.Label(self.tooltipframe, text="Hello world", bg="white", fg="black", font=("Arial", 10), borderwidth=5,border=True)
+        self.tooltip.pack()
+
         self.GUI_init()
     
     def update_color(self, color):
@@ -171,7 +180,8 @@ class MainWindow(tk.Tk):
 
 
 
-    def charcreator_change_val(self, target, childlist,parent, value, cplabel, splabel): # Character creator +1 -1 button activation
+    def charcreator_change_val(self, target, childlist,parent, value, cplabel, splabel): 
+        # Character creator +1 -1 button activation
 
         # Extract values
         cpval = cplabel.cget("text")
@@ -242,8 +252,61 @@ class MainWindow(tk.Tk):
                 sptext = f"Skill Points Remaining: {str(current_sp)}"
                 splabel.config(text=sptext)
 
-
-
+    def change_popup(self, action):
+        t = None
+        match action:
+            case "body":
+                t = "Characteristic: Body\nWeak against Soul\nStrong against Mind"
+            case "mind":
+                t = "Characteristic: Mind\nWeak against Body\nStrong against Soul"
+            case "soul":
+                t = "Characteristic: Soul\nWeak against Mind\nStrong against Body"
+            case "constitution":
+                t= "Skill: Constitution\nIncreases Hit Points\nIncreases resistance against poisons and germs"
+            case "endurance":
+                t= "Skill: Endurance\nLong term muscle strength\nIncreases lung capacity"
+            case "cunning":
+                t= "Skill: Cunning\nIncreases stealth and movement\nAids in slippery actions"
+            case "might":
+                t= "Skill: Might\nShort term physical prowess\nPhysical damage, raw power"
+            case "size":
+                t= "Skill: Size\nIncreases your size attributes\nAffects carrying capacity"
+            case "academics":
+                t= "Skill: Academics\nOverall knowledge\nIncreases number of proficiencies"
+            case "creativity":
+                t= "Skill: Creativity\nCrafting recipes and opportunities\nHelps in some puzzles"
+            case "focus":
+                t= "Skill: Focus\nIncreases attempts that require focus\nResistance against distractions"
+            case "resilience":
+                t= "Skill: Resilience\nStrength of mind\nDefends against manipulation"
+            case "tactics":
+                t= "Skill: Tactics\nUsed for traps, bombs and schemes\nUsed to grant tactical support"
+            case "arcana":
+                t= "Skill: Arcana\nIncreases the number of your spells\nIncreases spell power"
+            case "connection":
+                t= "Skill: Connection\nRead others like a book\nManipulate both the world of beast and man"
+            case "spirit":
+                t= "Skill: Spirit\nUsed for out-of-body activities\nConnects you to the dead"
+            case "faith":
+                t= "Skill: Faith\nUnion with both the divine and the unholy\nUsed for both healing and necromancy"
+            case "sense":
+                t= "Skill: Sense\nEnhances your senses by arcane means\nIncreases defense against brutal attacks"
+        self.tooltip.config(text=t)
+            
+    # Tooltip stuff
+    def show_tooltip(self, action):
+        self.change_popup(action)
+        self.tooltipwin.deiconify()
+        self.focus_force()
+        self.tooltipwin.lift()
+    
+    def move_tooltip(self, event):
+        self.tooltipwin.geometry(f"+{event.x_root + 10}+{event.y_root + 10}")
+    
+    def hide_tooltip(self, event):
+    
+        self.tooltipwin.withdraw()
+    ###
 
     def character_creator(self): # Enter character creator
         for button in self.buttons:
@@ -326,6 +389,9 @@ class MainWindow(tk.Tk):
                                        width=10,
                                        bg=color,
                                        font=("Arial Black", 8),command=lambda c=content[0]: show_popup(c))
+                mainbutton.bind("<Enter>",lambda event, c=content[0]: self.show_tooltip(c))
+                mainbutton.bind("<Motion>", self.move_tooltip)
+                mainbutton.bind("<Leave>", self.hide_tooltip)
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
                 parentbuttons.insert(phase, mainbutton)
@@ -357,6 +423,9 @@ class MainWindow(tk.Tk):
                                        width=12, 
                                        bg=color,
                                        command=lambda c=content[0]: show_popup(c))
+                mainbutton.bind("<Enter>",lambda event, c=content[0]: self.show_tooltip(c))
+                mainbutton.bind("<Motion>", self.move_tooltip)
+                mainbutton.bind("<Leave>", self.hide_tooltip)
                 mainbutton.pack(anchor="center")
                 self.buttons.append(mainbutton)
 
@@ -1692,11 +1761,11 @@ def show_popup(source):
             d_text = "You understand and feel the presence of divinity and those unholy. With faith, one can turn the tide of battle through miracles of prayer."
             d_text2 = "Clerics and priests, through faith alone have access to spells and rituals that grant communication with and summoning of holy and unholy beings."
             r_text = "Represents your connection with the heights of divinity, and depths of the unholy."
-        case "sight":
-            l_text = "Skill: Sight"
-            d_text = "With sight you can see things in the other dimensions. You can observe ghosts, see through doors, follow people in the past."
-            d_text2 = "Some claim they reached such heights with sight, that they were even able to see not just events of the past, but in the future as well."
-            r_text = "Represents your ability to see in ways others cannot. Greatly affected by your other Soul-skills."
+        case "sense":
+            l_text = "Skill: Sense"
+            d_text = "Your soul acts as a sixth sense, providing you benefits for each other sense."
+            d_text2 = "You can sense patterns in others, you can see the movement and know what happens next. You can feel the change."
+            r_text = "Represents your ability to survive against brutal attacks, and bonus to your overall senses."
 
     wrappi = 200
 

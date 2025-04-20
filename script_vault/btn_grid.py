@@ -12,7 +12,7 @@ class DragDropGrid(tk.Tk):
         self.frames = [[None for _ in range(3)] for _ in range(3)]
         for row in range(3):
             for col in range(3):
-                frame = tk.Frame(self, width=100, height=100, bg="lightgray", relief="solid", borderwidth=1)
+                frame = tk.Frame(self, width=80, height=80, bg="lightgray", relief="solid", borderwidth=1)
                 frame.grid(row=row, column=col, padx=5, pady=5)
                 self.frames[row][col] = frame
 
