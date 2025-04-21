@@ -3,6 +3,8 @@
 import os # Used to find the script and create paths for file management
 import shutil # Used to remove items, (characters, features, spells, kind of anything really. Not yet implemented)
 import tkinter as tk # Runs the GUI
+from tkinter import *
+from tkinter.ttk import *
 from PIL import Image, ImageTk
 
 finn_encoding = "utf-8" # Used for file storing and reading with Ä Ö and Ås
@@ -649,8 +651,8 @@ class MainWindow(tk.Tk):
                                  command=self.character_creator)
         newcharacter.pack(side="top",pady=2)
         self.buttons.append(newcharacter)
-        newcharacter.bind("<Enter>", lambda event: newcharacter.config(bg="yellow"))
-        newcharacter.bind("<Leave>", lambda event: newcharacter.config(bg="white"))
+        newcharacter.bind("<Enter>", lambda event: newcharacter.config(bg="light gray", width=22, height=2))
+        newcharacter.bind("<Leave>", lambda event: newcharacter.config(bg="white", width=20, height=1))
         
 
         loadcharacter = tk.Button(mainframe, width=20,
@@ -658,40 +660,40 @@ class MainWindow(tk.Tk):
                                   command=self.character_loader)
         loadcharacter.pack(side="top",pady=2)
         self.buttons.append(loadcharacter)
-        loadcharacter.bind("<Enter>", lambda event: loadcharacter.config(bg="yellow"))
-        loadcharacter.bind("<Leave>", lambda event: loadcharacter.config(bg="white"))
+        loadcharacter.bind("<Enter>", lambda event: loadcharacter.config(bg="light gray", width=22, height=2))
+        loadcharacter.bind("<Leave>", lambda event: loadcharacter.config(bg="white", width=20, height=1))
 
         featurebutton = tk.Button(mainframe,width=20,
                                   text="Features Menu",
                                   command=self.features_menu)
         featurebutton.pack(side="top",pady=2)
         self.buttons.append(featurebutton)
-        featurebutton.bind("<Enter>", lambda event: featurebutton.config(bg="yellow"))
-        featurebutton.bind("<Leave>", lambda event: featurebutton.config(bg="white"))
+        featurebutton.bind("<Enter>", lambda event: featurebutton.config(bg="light gray", width=22, height=2))
+        featurebutton.bind("<Leave>", lambda event: featurebutton.config(bg="white", width=20, height=1))
 
         itembutton = tk.Button(mainframe,width=20,
                                text="Items Menu",
                                command=self.item_menu)
         itembutton.pack(side="top",pady=2)
         self.buttons.append(itembutton)
-        itembutton.bind("<Enter>", lambda event: itembutton.config(bg="yellow"))
-        itembutton.bind("<Leave>", lambda event: itembutton.config(bg="white"))
+        itembutton.bind("<Enter>", lambda event: itembutton.config(bg="light gray", width=22, height=2))
+        itembutton.bind("<Leave>", lambda event: itembutton.config(bg="white", width=20, height=1))
 
         settings_button = tk.Button(mainframe,width=20,
                                     text="Settings",
                                     command=self.settings_menu)
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
-        settings_button.bind("<Enter>", lambda event: settings_button.config(bg="yellow"))
-        settings_button.bind("<Leave>", lambda event: settings_button.config(bg="white"))
+        settings_button.bind("<Enter>", lambda event: settings_button.config(bg="light gray", width=22, height=2))
+        settings_button.bind("<Leave>", lambda event: settings_button.config(bg="white", width=20, height=1))
 
         devbut = tk.Button(mainframe,width=20,
                            text="Developer Logs",
                            command=self.devlogs)
         devbut.pack(side="top",pady=2)
         self.buttons.append(devbut)
-        devbut.bind("<Enter>", lambda event: devbut.config(bg="yellow"))
-        devbut.bind("<Leave>", lambda event: devbut.config(bg="white"))
+        devbut.bind("<Enter>", lambda event: devbut.config(bg="light gray", width=22, height=2))
+        devbut.bind("<Leave>", lambda event: devbut.config(bg="white", width=20, height=1))
 
         quit_button = tk.Button(self,text="QUIT",
                                 command=lambda: self.quitconfirm(quit_button),
@@ -1137,8 +1139,6 @@ class MainWindow(tk.Tk):
         newitembutton.pack(side="bottom")
         self.buttons.append(newitembutton)
 
-
-    # Menu for item creation
     def item_creation(self):
         for entity in self.buttons:
             entity.destroy()
@@ -1146,7 +1146,7 @@ class MainWindow(tk.Tk):
         creationlabel = tk.Label(self,font=("Arial Black", 10),
                                  text="Item Creation",
                                  bg=self.settings.back_color,
-                                 fg=self.settings.font_color)
+                                 fg=self.settings.title_color)
         creationlabel.pack(side="top",pady=5)
         self.buttons.append(creationlabel)
 
@@ -1353,8 +1353,10 @@ class MainWindow(tk.Tk):
         label.image_ref = image
         label.config(image=image)
 
+
     # When user presses "P"-button, this function runs fetching data of the selected type
     def get_saved_entries(self, origin, target):
+        print(f"Origin: {origin}")
         temp = [] # Instead of clearing the scene as usual, this is used to clean the canvas
         extracted = [] # Data extracted from file
         list_of_contentlists = []
@@ -1366,14 +1368,15 @@ class MainWindow(tk.Tk):
                 used_file = types_items_file
                 title = "Type Selection"
             case "item_rarity":
+                print("item_rarity")
                 used_file = rarity_items_file
                 title = "Rarity Selection"
             case "item_keyword":
                 used_file = keywords_items_file
                 title = "Keyword Selection"
         quicktest = tk.Toplevel(root)
-        quicktest.geometry("200x200")
-        quicktest.title("UWU")
+        quicktest.geometry("400x300")
+        quicktest.title(title)
         temp.append(quicktest)
 
         canvas = tk.Canvas(quicktest, width=400, height=400, bg="gray")
@@ -1393,11 +1396,12 @@ class MainWindow(tk.Tk):
         temp.append(new_)
 
         buttonframe = tk.Frame(canvas)
-        buttonframe.pack(side="bottom")
+        buttonframe.pack(anchor="center")
         
         temp.append(buttonframe)
         
         with open(used_file, "r") as file:
+            print(used_file)
             for line in file:
                 extracted.append(str(line))
         extracted.sort()
@@ -1411,6 +1415,11 @@ class MainWindow(tk.Tk):
                     list_of_contentlists.append(newlist)
                     newlist = []
                     X = 0
+        else:
+            newlist = []
+            for entry in extracted:
+                newlist.append(entry)
+                list_of_contentlists.append(newlist)
         X = 0
         Y = 0
         Z = 0
