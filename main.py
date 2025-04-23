@@ -119,6 +119,7 @@ class Config:
         with open(color_file, "w") as file:
             file.write(color)
 
+
 # Mainwindow class is for the user GUI and all its scenes.
 # Creates itself as a tkinter window.
 class MainWindow(tk.Tk):
@@ -138,7 +139,13 @@ class MainWindow(tk.Tk):
         self.tooltipwin.overrideredirect(True)  # Removes title bar for a floating effect
         self.tooltipframe = tk.Frame(self.tooltipwin, bg="black", bd=3)
         self.tooltipframe.pack()
-        self.tooltip =  tk.Label(self.tooltipframe, text="Hello world", bg="white", fg="black", font=("Arial", 10), borderwidth=5,border=True)
+        self.tooltip =  tk.Label(self.tooltipframe,
+                                 text="Hello world",
+                                 bg="white",
+                                 fg="black",
+                                 font=("Arial", 10),
+                                 borderwidth=5,
+                                 border=True)
         self.tooltip.pack()
 
         self.GUI_init()
@@ -390,7 +397,8 @@ class MainWindow(tk.Tk):
                                        text=f"{char}: {val}",
                                        width=10,
                                        bg=color,
-                                       font=("Arial Black", 8),command=lambda c=content[0]: show_popup(c))
+                                       font=("Arial Black", 8),
+                                       command=lambda c=content[0]: show_popup(c))
                 mainbutton.bind("<Enter>",lambda event, c=content[0]: self.show_tooltip(c))
                 mainbutton.bind("<Motion>", self.move_tooltip)
                 mainbutton.bind("<Leave>", self.hide_tooltip)
@@ -400,14 +408,16 @@ class MainWindow(tk.Tk):
 
                 redu_button = tk.Button(buttonframe,
                                         text="-1",
-                                        command=lambda b=mainbutton, l=buttonsets[phase]: self.charcreator_change_val(b,l,None, "-1", CPlabel, SPlabel),
+                                        command=lambda b=mainbutton,
+                                            l=buttonsets[phase]: self.charcreator_change_val(b, l, None, "-1", CPlabel, SPlabel),
                                         width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
                 incr_button = tk.Button(buttonframe,
                                         text="+1",
-                                        command=lambda b=mainbutton, l=buttonsets[phase]: self.charcreator_change_val(b,l,None, "+1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton,
+                                            l=buttonsets[phase]: self.charcreator_change_val(b, l, None, "+1",CPlabel, SPlabel),
                                         width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
@@ -435,13 +445,15 @@ class MainWindow(tk.Tk):
 
                 redu_button = tk.Button(buttonframe,
                                         text="-1",
-                                        command=lambda b=mainbutton, p=parentbuttons[phase]: self.charcreator_change_val(b,None,p, "-1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton,
+                                            p=parentbuttons[phase]: self.charcreator_change_val(b, None, p, "-1", CPlabel, SPlabel),
                                         width=8)
                 redu_button.pack(side="left",padx=2)
                 self.buttons.append(redu_button)
 
                 incr_button = tk.Button(buttonframe, text="+1",
-                                        command=lambda b=mainbutton, p=parentbuttons[phase]: self.charcreator_change_val(b,None,p, "+1",CPlabel, SPlabel),
+                                        command=lambda b=mainbutton,
+                                            p=parentbuttons[phase]: self.charcreator_change_val(b, None, p, "+1", CPlabel, SPlabel),
                                         width=8)
                 incr_button.pack(side="right",padx=2)
                 self.buttons.append(incr_button)
@@ -638,6 +650,7 @@ class MainWindow(tk.Tk):
         mainframe.pack(anchor="center")
         self.buttons.append(mainframe)
 
+
         mainlabel = tk.Label(mainframe,
                              text = "Main Menu",
                              font = ("Arial Black", 30),
@@ -645,6 +658,7 @@ class MainWindow(tk.Tk):
                              bg = self.settings.back_color)
         mainlabel.pack(side = "top",pady = 10)
         self.buttons.append(mainlabel)
+
 
         newcharacter = tk.Button(mainframe,width=20,
                                  text="New Character",
@@ -660,40 +674,55 @@ class MainWindow(tk.Tk):
                                   command=self.character_loader)
         loadcharacter.pack(side="top",pady=2)
         self.buttons.append(loadcharacter)
-        loadcharacter.bind("<Enter>", lambda event: loadcharacter.config(bg="light gray", width=22, height=2))
-        loadcharacter.bind("<Leave>", lambda event: loadcharacter.config(bg="white", width=20, height=1))
+        loadcharacter.bind("<Enter>",
+                           lambda event: loadcharacter.config(bg="light gray", width=22, height=2))
+        loadcharacter.bind("<Leave>",
+                           lambda event: loadcharacter.config(bg="white", width=20, height=1))
+
 
         featurebutton = tk.Button(mainframe,width=20,
                                   text="Features Menu",
                                   command=self.features_menu)
         featurebutton.pack(side="top",pady=2)
         self.buttons.append(featurebutton)
-        featurebutton.bind("<Enter>", lambda event: featurebutton.config(bg="light gray", width=22, height=2))
-        featurebutton.bind("<Leave>", lambda event: featurebutton.config(bg="white", width=20, height=1))
+        featurebutton.bind("<Enter>",
+                           lambda event: featurebutton.config(bg="light gray", width=22, height=2))
+        featurebutton.bind("<Leave>",
+                           lambda event: featurebutton.config(bg="white", width=20, height=1))
+
 
         itembutton = tk.Button(mainframe,width=20,
                                text="Items Menu",
                                command=self.item_menu)
         itembutton.pack(side="top",pady=2)
         self.buttons.append(itembutton)
-        itembutton.bind("<Enter>", lambda event: itembutton.config(bg="light gray", width=22, height=2))
-        itembutton.bind("<Leave>", lambda event: itembutton.config(bg="white", width=20, height=1))
+        itembutton.bind("<Enter>",
+                        lambda event: itembutton.config(bg="light gray", width=22, height=2))
+        itembutton.bind("<Leave>",
+                        lambda event: itembutton.config(bg="white", width=20, height=1))
+
 
         settings_button = tk.Button(mainframe,width=20,
                                     text="Settings",
                                     command=self.settings_menu)
         settings_button.pack(side="top",pady=2)
         self.buttons.append(settings_button)
-        settings_button.bind("<Enter>", lambda event: settings_button.config(bg="light gray", width=22, height=2))
-        settings_button.bind("<Leave>", lambda event: settings_button.config(bg="white", width=20, height=1))
+        settings_button.bind("<Enter>",
+                             lambda event: settings_button.config(bg="light gray", width=22, height=2))
+        settings_button.bind("<Leave>",
+                             lambda event: settings_button.config(bg="white", width=20, height=1))
+
 
         devbut = tk.Button(mainframe,width=20,
                            text="Developer Logs",
                            command=self.devlogs)
         devbut.pack(side="top",pady=2)
         self.buttons.append(devbut)
-        devbut.bind("<Enter>", lambda event: devbut.config(bg="light gray", width=22, height=2))
-        devbut.bind("<Leave>", lambda event: devbut.config(bg="white", width=20, height=1))
+        devbut.bind("<Enter>",
+                    lambda event: devbut.config(bg="light gray", width=22, height=2))
+        devbut.bind("<Leave>",
+                    lambda event: devbut.config(bg="white", width=20, height=1))
+
 
         quit_button = tk.Button(self,text="QUIT",
                                 command=lambda: self.quitconfirm(quit_button),
