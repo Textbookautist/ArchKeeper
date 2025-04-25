@@ -741,8 +741,13 @@ class MainWindow(tk.Tk):
     def add(self, object):
         self.buttons.append(object)
 
+
     def feature_creation(self):
         self.clear()
+
+        lab = tk.Label(self, text="Make Me >:I", fg=self.settings.title_color, font=("Arial Black", 20))
+        lab.pack(side="top")
+        self.add(lab)
 
         back_feature = tk.Button(self,
                               text="Back",
@@ -752,7 +757,6 @@ class MainWindow(tk.Tk):
                               bg="red")
         back_feature.pack(side="bottom")
         self.buttons.append(back_feature)
-
 
     def features_menu(self):
         for item in self.buttons:
@@ -781,7 +785,7 @@ class MainWindow(tk.Tk):
         mainframe.pack(anchor="center")
         self.buttons.append(mainframe)
 
-        featureframe = tk.Frame(mainframe)
+        featureframe = tk.Frame(mainframe, bg=self.settings.back_color)
         featureframe.grid(row=0,column=1,padx=5)
         self.add(featureframe)
 
@@ -809,6 +813,10 @@ class MainWindow(tk.Tk):
                 self.add(btn)
 
         self.create_back_btn("main")
+
+        fea_crea = tk.Button(self, text="Create Feature", command=self.feature_creation)
+        fea_crea.pack(side="bottom")
+        self.add(fea_crea)
 
     def codex_open(self, type, path, name):
         self.clear()
@@ -934,7 +942,7 @@ class MainWindow(tk.Tk):
                 for item in traiteffect:
                     print(item)
                     texti = item[1].capitalize()
-                    label = tk.Label(traitframe, text=f"-{texti}", wraplength=1000)
+                    label = tk.Label(traitframe, text=f"-{texti}", wraplength=400)
                     label.pack(pady=3)
                     self.add(label)
 
