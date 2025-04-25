@@ -1416,11 +1416,13 @@ class MainWindow(tk.Tk):
         label.pack(side="top")
         temp.append(label)
 
-        closebutton = tk.Button(canvas,text="Close",command=lambda x=temp: [item.destroy() for item in x])
+        closebutton = tk.Button(canvas,text="Close",
+                                command=lambda x=temp: [item.destroy() for item in x])
         closebutton.pack(side="bottom")
         temp.append(closebutton)
 
-        new_ = tk.Button(canvas, text="Add New", command=lambda: self.append_new_entry(used_file, temp))
+        new_ = tk.Button(canvas, text="Add New",
+                         command=lambda: self.append_new_entry(used_file, temp))
         new_.pack(side="bottom")
         temp.append(new_)
 
